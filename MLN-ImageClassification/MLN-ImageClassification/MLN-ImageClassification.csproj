@@ -1,0 +1,1163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.ML.TensorFlow.Redist.0.11.0\build\netstandard2.0\Microsoft.ML.TensorFlow.Redist.props" Condition="Exists('..\packages\Microsoft.ML.TensorFlow.Redist.0.11.0\build\netstandard2.0\Microsoft.ML.TensorFlow.Redist.props')" />
+  <Import Project="..\packages\Microsoft.ML.0.11.0\build\netstandard2.0\Microsoft.ML.props" Condition="Exists('..\packages\Microsoft.ML.0.11.0\build\netstandard2.0\Microsoft.ML.props')" />
+  <Import Project="..\packages\Microsoft.ML.CpuMath.0.11.0\build\netstandard2.0\Microsoft.ML.CpuMath.props" Condition="Exists('..\packages\Microsoft.ML.CpuMath.0.11.0\build\netstandard2.0\Microsoft.ML.CpuMath.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{92EB39D8-A718-45C3-A4A6-B7E5AD7C3729}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MLN_ImageClassification</RootNamespace>
+    <AssemblyName>MLN-ImageClassification</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Data.DataView, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.DataView.0.11.0\lib\netstandard2.0\Microsoft.Data.DataView.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ML.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ML.0.11.0\lib\netstandard2.0\Microsoft.ML.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ML.CpuMath, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ML.CpuMath.0.11.0\lib\netstandard2.0\Microsoft.ML.CpuMath.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ML.Data, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ML.0.11.0\lib\netstandard2.0\Microsoft.ML.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ML.FastTree, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ML.0.11.0\lib\netstandard2.0\Microsoft.ML.FastTree.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ML.ImageAnalytics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ML.ImageAnalytics.0.11.0\lib\netstandard2.0\Microsoft.ML.ImageAnalytics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ML.KMeansClustering, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ML.0.11.0\lib\netstandard2.0\Microsoft.ML.KMeansClustering.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ML.PCA, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ML.0.11.0\lib\netstandard2.0\Microsoft.ML.PCA.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ML.StandardLearners, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ML.0.11.0\lib\netstandard2.0\Microsoft.ML.StandardLearners.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ML.TensorFlow, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ML.TensorFlow.0.11.0\lib\netstandard2.0\Microsoft.ML.TensorFlow.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ML.Transforms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ML.0.11.0\lib\netstandard2.0\Microsoft.ML.Transforms.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.CodeDom, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.CodeDom.4.4.0\lib\net461\System.CodeDom.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.5.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.AccessControl, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.AccessControl.4.5.0\lib\net461\System.IO.FileSystem.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.1\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.AccessControl, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.4.5.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.4.5.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Dataflow, Version=4.6.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Dataflow.4.8.0\lib\netstandard2.0\System.Threading.Tasks.Dataflow.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Data\predict\1007.jpg" />
+    <Content Include="Data\predict\1008.jpg" />
+    <Content Include="Data\test\hot-dog\1000288.jpg" />
+    <Content Include="Data\test\hot-dog\1011661.jpg" />
+    <Content Include="Data\test\hot-dog\1013916.jpg" />
+    <Content Include="Data\test\hot-dog\1017226.jpg" />
+    <Content Include="Data\test\hot-dog\1018245.jpg" />
+    <Content Include="Data\test\hot-dog\1023510.jpg" />
+    <Content Include="Data\test\hot-dog\1040579.jpg" />
+    <Content Include="Data\test\hot-dog\1046526.jpg" />
+    <Content Include="Data\test\hot-dog\1051628.jpg" />
+    <Content Include="Data\test\hot-dog\1051643.jpg" />
+    <Content Include="Data\test\hot-dog\1051711.jpg" />
+    <Content Include="Data\test\hot-dog\1053879.jpg" />
+    <Content Include="Data\test\hot-dog\1055689.jpg" />
+    <Content Include="Data\test\hot-dog\1057517.jpg" />
+    <Content Include="Data\test\hot-dog\1057882.jpg" />
+    <Content Include="Data\test\hot-dog\1059903.jpg" />
+    <Content Include="Data\test\hot-dog\1068951.jpg" />
+    <Content Include="Data\test\hot-dog\1086377.jpg" />
+    <Content Include="Data\test\hot-dog\1086675.jpg" />
+    <Content Include="Data\test\hot-dog\1086677.jpg" />
+    <Content Include="Data\test\hot-dog\1098632.jpg" />
+    <Content Include="Data\test\hot-dog\1098635.jpg" />
+    <Content Include="Data\test\hot-dog\1104394.jpg" />
+    <Content Include="Data\test\hot-dog\1107015.jpg" />
+    <Content Include="Data\test\hot-dog\1111638.jpg" />
+    <Content Include="Data\test\hot-dog\1114633.jpg" />
+    <Content Include="Data\test\hot-dog\1115020.jpg" />
+    <Content Include="Data\test\hot-dog\1119906.jpg" />
+    <Content Include="Data\test\hot-dog\1123406.jpg" />
+    <Content Include="Data\test\hot-dog\1125436.jpg" />
+    <Content Include="Data\test\hot-dog\1133460.jpg" />
+    <Content Include="Data\test\hot-dog\1134237.jpg" />
+    <Content Include="Data\test\hot-dog\1143044.jpg" />
+    <Content Include="Data\test\hot-dog\1143110.jpg" />
+    <Content Include="Data\test\hot-dog\1143398.jpg" />
+    <Content Include="Data\test\hot-dog\1143830.jpg" />
+    <Content Include="Data\test\hot-dog\1144643.jpg" />
+    <Content Include="Data\test\hot-dog\1153737.jpg" />
+    <Content Include="Data\test\hot-dog\1154965.jpg" />
+    <Content Include="Data\test\hot-dog\1159972.jpg" />
+    <Content Include="Data\test\hot-dog\1161343.jpg" />
+    <Content Include="Data\test\hot-dog\1161755.jpg" />
+    <Content Include="Data\test\hot-dog\1166403.jpg" />
+    <Content Include="Data\test\hot-dog\1166929.jpg" />
+    <Content Include="Data\test\hot-dog\1174926.jpg" />
+    <Content Include="Data\test\hot-dog\1179964.jpg" />
+    <Content Include="Data\test\hot-dog\1182402.jpg" />
+    <Content Include="Data\test\hot-dog\1182518.jpg" />
+    <Content Include="Data\test\hot-dog\1183508.jpg" />
+    <Content Include="Data\test\hot-dog\1183725.jpg" />
+    <Content Include="Data\test\hot-dog\1186993.jpg" />
+    <Content Include="Data\test\hot-dog\1190833.jpg" />
+    <Content Include="Data\test\hot-dog\1192908.jpg" />
+    <Content Include="Data\test\hot-dog\1195487.jpg" />
+    <Content Include="Data\test\hot-dog\1195698.jpg" />
+    <Content Include="Data\test\hot-dog\1195977.jpg" />
+    <Content Include="Data\test\hot-dog\1204467.jpg" />
+    <Content Include="Data\test\hot-dog\1205205.jpg" />
+    <Content Include="Data\test\hot-dog\1207811.jpg" />
+    <Content Include="Data\test\hot-dog\1210977.jpg" />
+    <Content Include="Data\test\hot-dog\1211682.jpg" />
+    <Content Include="Data\test\hot-dog\1224013.jpg" />
+    <Content Include="Data\test\hot-dog\1226430.jpg" />
+    <Content Include="Data\test\hot-dog\1226791.jpg" />
+    <Content Include="Data\test\hot-dog\1233688.jpg" />
+    <Content Include="Data\test\hot-dog\1234491.jpg" />
+    <Content Include="Data\test\hot-dog\1236871.jpg" />
+    <Content Include="Data\test\hot-dog\1245977.jpg" />
+    <Content Include="Data\test\hot-dog\1251087.jpg" />
+    <Content Include="Data\test\hot-dog\1251173.jpg" />
+    <Content Include="Data\test\hot-dog\1251741.jpg" />
+    <Content Include="Data\test\hot-dog\1265953.jpg" />
+    <Content Include="Data\test\hot-dog\1267706.jpg" />
+    <Content Include="Data\test\hot-dog\1268739.jpg" />
+    <Content Include="Data\test\hot-dog\1282229.jpg" />
+    <Content Include="Data\test\hot-dog\1282523.jpg" />
+    <Content Include="Data\test\hot-dog\1301907.jpg" />
+    <Content Include="Data\test\hot-dog\1308699.jpg" />
+    <Content Include="Data\test\hot-dog\1308879.jpg" />
+    <Content Include="Data\test\hot-dog\1313978.jpg" />
+    <Content Include="Data\test\hot-dog\1322860.jpg" />
+    <Content Include="Data\test\hot-dog\1335350.jpg" />
+    <Content Include="Data\test\hot-dog\1336262.jpg" />
+    <Content Include="Data\test\hot-dog\1344141.jpg" />
+    <Content Include="Data\test\hot-dog\1344958.jpg" />
+    <Content Include="Data\test\hot-dog\1352514.jpg" />
+    <Content Include="Data\test\hot-dog\1361187.jpg" />
+    <Content Include="Data\test\hot-dog\1361606.jpg" />
+    <Content Include="Data\test\hot-dog\1363093.jpg" />
+    <Content Include="Data\test\hot-dog\1364019.jpg" />
+    <Content Include="Data\test\hot-dog\3493406.jpg" />
+    <Content Include="Data\test\hot-dog\3494550.jpg" />
+    <Content Include="Data\test\hot-dog\3495622.jpg" />
+    <Content Include="Data\test\hot-dog\3497633.jpg" />
+    <Content Include="Data\test\hot-dog\3497634.jpg" />
+    <Content Include="Data\test\hot-dog\3497635.jpg" />
+    <Content Include="Data\test\hot-dog\3503584.jpg" />
+    <Content Include="Data\test\hot-dog\3503720.jpg" />
+    <Content Include="Data\test\hot-dog\3525466.jpg" />
+    <Content Include="Data\test\hot-dog\3527149.jpg" />
+    <Content Include="Data\test\hot-dog\3538750.jpg" />
+    <Content Include="Data\test\hot-dog\3543293.jpg" />
+    <Content Include="Data\test\hot-dog\3552463.jpg" />
+    <Content Include="Data\test\hot-dog\3552499.jpg" />
+    <Content Include="Data\test\hot-dog\3558578.jpg" />
+    <Content Include="Data\test\hot-dog\3568139.jpg" />
+    <Content Include="Data\test\hot-dog\3575940.jpg" />
+    <Content Include="Data\test\hot-dog\3577428.jpg" />
+    <Content Include="Data\test\hot-dog\3620891.jpg" />
+    <Content Include="Data\test\hot-dog\3622018.jpg" />
+    <Content Include="Data\test\hot-dog\3628132.jpg" />
+    <Content Include="Data\test\hot-dog\3636192.jpg" />
+    <Content Include="Data\test\hot-dog\3637190.jpg" />
+    <Content Include="Data\test\hot-dog\3639855.jpg" />
+    <Content Include="Data\test\hot-dog\3642871.jpg" />
+    <Content Include="Data\test\hot-dog\3645373.jpg" />
+    <Content Include="Data\test\hot-dog\3646755.jpg" />
+    <Content Include="Data\test\hot-dog\3655069.jpg" />
+    <Content Include="Data\test\hot-dog\3655420.jpg" />
+    <Content Include="Data\test\hot-dog\3660087.jpg" />
+    <Content Include="Data\test\hot-dog\3684539.jpg" />
+    <Content Include="Data\test\hot-dog\3690427.jpg" />
+    <Content Include="Data\test\hot-dog\3690925.jpg" />
+    <Content Include="Data\test\hot-dog\3692506.jpg" />
+    <Content Include="Data\test\hot-dog\3695334.jpg" />
+    <Content Include="Data\test\hot-dog\3701301.jpg" />
+    <Content Include="Data\test\hot-dog\3711230.jpg" />
+    <Content Include="Data\test\hot-dog\3711747.jpg" />
+    <Content Include="Data\test\hot-dog\3714525.jpg" />
+    <Content Include="Data\test\hot-dog\3716190.jpg" />
+    <Content Include="Data\test\hot-dog\3724744.jpg" />
+    <Content Include="Data\test\hot-dog\3726090.jpg" />
+    <Content Include="Data\test\hot-dog\3726741.jpg" />
+    <Content Include="Data\test\hot-dog\3728106.jpg" />
+    <Content Include="Data\test\hot-dog\3730066.jpg" />
+    <Content Include="Data\test\hot-dog\3733563.jpg" />
+    <Content Include="Data\test\hot-dog\3733809.jpg" />
+    <Content Include="Data\test\hot-dog\3736382.jpg" />
+    <Content Include="Data\test\hot-dog\3742819.jpg" />
+    <Content Include="Data\test\hot-dog\3742960.jpg" />
+    <Content Include="Data\test\hot-dog\3746979.jpg" />
+    <Content Include="Data\test\hot-dog\3748381.jpg" />
+    <Content Include="Data\test\hot-dog\3750744.jpg" />
+    <Content Include="Data\test\hot-dog\3753950.jpg" />
+    <Content Include="Data\test\hot-dog\3758438.jpg" />
+    <Content Include="Data\test\hot-dog\3760604.jpg" />
+    <Content Include="Data\test\hot-dog\3763491.jpg" />
+    <Content Include="Data\test\hot-dog\3764724.jpg" />
+    <Content Include="Data\test\hot-dog\3765729.jpg" />
+    <Content Include="Data\test\hot-dog\3778004.jpg" />
+    <Content Include="Data\test\hot-dog\3782895.jpg" />
+    <Content Include="Data\test\hot-dog\3784903.jpg" />
+    <Content Include="Data\test\hot-dog\3789403.jpg" />
+    <Content Include="Data\test\hot-dog\3789737.jpg" />
+    <Content Include="Data\test\hot-dog\3798465.jpg" />
+    <Content Include="Data\test\hot-dog\3802333.jpg" />
+    <Content Include="Data\test\hot-dog\3811761.jpg" />
+    <Content Include="Data\test\hot-dog\3814644.jpg" />
+    <Content Include="Data\test\hot-dog\3835641.jpg" />
+    <Content Include="Data\test\hot-dog\3838014.jpg" />
+    <Content Include="Data\test\hot-dog\3840582.jpg" />
+    <Content Include="Data\test\hot-dog\3842701.jpg" />
+    <Content Include="Data\test\hot-dog\3843212.jpg" />
+    <Content Include="Data\test\hot-dog\3844876.jpg" />
+    <Content Include="Data\test\hot-dog\3846249.jpg" />
+    <Content Include="Data\test\hot-dog\3847258.jpg" />
+    <Content Include="Data\test\hot-dog\3847289.jpg" />
+    <Content Include="Data\test\hot-dog\3852193.jpg" />
+    <Content Include="Data\test\hot-dog\3859916.jpg" />
+    <Content Include="Data\test\hot-dog\3860703.jpg" />
+    <Content Include="Data\test\hot-dog\3861791.jpg" />
+    <Content Include="Data\test\hot-dog\3864679.jpg" />
+    <Content Include="Data\test\hot-dog\3867396.jpg" />
+    <Content Include="Data\test\hot-dog\3870911.jpg" />
+    <Content Include="Data\test\hot-dog\3872613.jpg" />
+    <Content Include="Data\test\hot-dog\3872738.jpg" />
+    <Content Include="Data\test\hot-dog\3878668.jpg" />
+    <Content Include="Data\test\hot-dog\3884328.jpg" />
+    <Content Include="Data\test\hot-dog\3901819.jpg" />
+    <Content Include="Data\test\hot-dog\3902792.jpg" />
+    <Content Include="Data\test\hot-dog\3904556.jpg" />
+    <Content Include="Data\test\hot-dog\3905030.jpg" />
+    <Content Include="Data\test\hot-dog\3905238.jpg" />
+    <Content Include="Data\test\hot-dog\3911675.jpg" />
+    <Content Include="Data\test\hot-dog\3912870.jpg" />
+    <Content Include="Data\test\hot-dog\3915296.jpg" />
+    <Content Include="Data\test\hot-dog\3918223.jpg" />
+    <Content Include="Data\test\hot-dog\956229.jpg" />
+    <Content Include="Data\test\hot-dog\958900.jpg" />
+    <Content Include="Data\test\hot-dog\959883.jpg" />
+    <Content Include="Data\test\hot-dog\961367.jpg" />
+    <Content Include="Data\test\hot-dog\971944.jpg" />
+    <Content Include="Data\test\hot-dog\974520.jpg" />
+    <Content Include="Data\test\hot-dog\978158.jpg" />
+    <Content Include="Data\test\hot-dog\978455.jpg" />
+    <Content Include="Data\test\hot-dog\979767.jpg" />
+    <Content Include="Data\test\hot-dog\987144.jpg" />
+    <Content Include="Data\test\hot-dog\987193.jpg" />
+    <Content Include="Data\test\hot-dog\996310.jpg" />
+    <Content Include="Data\test\not-hot-dog\101312.jpg" />
+    <Content Include="Data\test\not-hot-dog\102037.jpg" />
+    <Content Include="Data\test\not-hot-dog\102197.jpg" />
+    <Content Include="Data\test\not-hot-dog\102813.jpg" />
+    <Content Include="Data\test\not-hot-dog\103010.jpg" />
+    <Content Include="Data\test\not-hot-dog\105375.jpg" />
+    <Content Include="Data\test\not-hot-dog\105647.jpg" />
+    <Content Include="Data\test\not-hot-dog\106608.jpg" />
+    <Content Include="Data\test\not-hot-dog\107013.jpg" />
+    <Content Include="Data\test\not-hot-dog\107216.jpg" />
+    <Content Include="Data\test\not-hot-dog\107312.jpg" />
+    <Content Include="Data\test\not-hot-dog\107816.jpg" />
+    <Content Include="Data\test\not-hot-dog\108310.jpg" />
+    <Content Include="Data\test\not-hot-dog\108743.jpg" />
+    <Content Include="Data\test\not-hot-dog\109401.jpg" />
+    <Content Include="Data\test\not-hot-dog\109926.jpg" />
+    <Content Include="Data\test\not-hot-dog\110171.jpg" />
+    <Content Include="Data\test\not-hot-dog\110385.jpg" />
+    <Content Include="Data\test\not-hot-dog\112309.jpg" />
+    <Content Include="Data\test\not-hot-dog\113605.jpg" />
+    <Content Include="Data\test\not-hot-dog\114269.jpg" />
+    <Content Include="Data\test\not-hot-dog\114601.jpg" />
+    <Content Include="Data\test\not-hot-dog\117282.jpg" />
+    <Content Include="Data\test\not-hot-dog\118378.jpg" />
+    <Content Include="Data\test\not-hot-dog\123902.jpg" />
+    <Content Include="Data\test\not-hot-dog\123929.jpg" />
+    <Content Include="Data\test\not-hot-dog\124128.jpg" />
+    <Content Include="Data\test\not-hot-dog\126345.jpg" />
+    <Content Include="Data\test\not-hot-dog\126784.jpg" />
+    <Content Include="Data\test\not-hot-dog\127029.jpg" />
+    <Content Include="Data\test\not-hot-dog\129045.jpg" />
+    <Content Include="Data\test\not-hot-dog\129050.jpg" />
+    <Content Include="Data\test\not-hot-dog\129730.jpg" />
+    <Content Include="Data\test\not-hot-dog\130384.jpg" />
+    <Content Include="Data\test\not-hot-dog\130766.jpg" />
+    <Content Include="Data\test\not-hot-dog\134369.jpg" />
+    <Content Include="Data\test\not-hot-dog\134598.jpg" />
+    <Content Include="Data\test\not-hot-dog\136985.jpg" />
+    <Content Include="Data\test\not-hot-dog\138514.jpg" />
+    <Content Include="Data\test\not-hot-dog\138754.jpg" />
+    <Content Include="Data\test\not-hot-dog\139291.jpg" />
+    <Content Include="Data\test\not-hot-dog\140292.jpg" />
+    <Content Include="Data\test\not-hot-dog\140832.jpg" />
+    <Content Include="Data\test\not-hot-dog\141320.jpg" />
+    <Content Include="Data\test\not-hot-dog\143158.jpg" />
+    <Content Include="Data\test\not-hot-dog\143685.jpg" />
+    <Content Include="Data\test\not-hot-dog\143994.jpg" />
+    <Content Include="Data\test\not-hot-dog\145012.jpg" />
+    <Content Include="Data\test\not-hot-dog\146029.jpg" />
+    <Content Include="Data\test\not-hot-dog\146910.jpg" />
+    <Content Include="Data\test\not-hot-dog\147312.jpg" />
+    <Content Include="Data\test\not-hot-dog\147558.jpg" />
+    <Content Include="Data\test\not-hot-dog\147599.jpg" />
+    <Content Include="Data\test\not-hot-dog\147628.jpg" />
+    <Content Include="Data\test\not-hot-dog\149278.jpg" />
+    <Content Include="Data\test\not-hot-dog\152498.jpg" />
+    <Content Include="Data\test\not-hot-dog\153387.jpg" />
+    <Content Include="Data\test\not-hot-dog\153648.jpg" />
+    <Content Include="Data\test\not-hot-dog\153823.jpg" />
+    <Content Include="Data\test\not-hot-dog\157282.jpg" />
+    <Content Include="Data\test\not-hot-dog\159745.jpg" />
+    <Content Include="Data\test\not-hot-dog\160301.jpg" />
+    <Content Include="Data\test\not-hot-dog\160494.jpg" />
+    <Content Include="Data\test\not-hot-dog\160611.jpg" />
+    <Content Include="Data\test\not-hot-dog\161122.jpg" />
+    <Content Include="Data\test\not-hot-dog\163153.jpg" />
+    <Content Include="Data\test\not-hot-dog\164288.jpg" />
+    <Content Include="Data\test\not-hot-dog\166217.jpg" />
+    <Content Include="Data\test\not-hot-dog\166821.jpg" />
+    <Content Include="Data\test\not-hot-dog\167022.jpg" />
+    <Content Include="Data\test\not-hot-dog\168924.jpg" />
+    <Content Include="Data\test\not-hot-dog\172042.jpg" />
+    <Content Include="Data\test\not-hot-dog\172593.jpg" />
+    <Content Include="Data\test\not-hot-dog\173241.jpg" />
+    <Content Include="Data\test\not-hot-dog\174045.jpg" />
+    <Content Include="Data\test\not-hot-dog\174977.jpg" />
+    <Content Include="Data\test\not-hot-dog\176667.jpg" />
+    <Content Include="Data\test\not-hot-dog\177372.jpg" />
+    <Content Include="Data\test\not-hot-dog\178804.jpg" />
+    <Content Include="Data\test\not-hot-dog\179038.jpg" />
+    <Content Include="Data\test\not-hot-dog\180453.jpg" />
+    <Content Include="Data\test\not-hot-dog\181579.jpg" />
+    <Content Include="Data\test\not-hot-dog\181677.jpg" />
+    <Content Include="Data\test\not-hot-dog\182516.jpg" />
+    <Content Include="Data\test\not-hot-dog\182658.jpg" />
+    <Content Include="Data\test\not-hot-dog\183313.jpg" />
+    <Content Include="Data\test\not-hot-dog\184954.jpg" />
+    <Content Include="Data\test\not-hot-dog\185190.jpg" />
+    <Content Include="Data\test\not-hot-dog\187087.jpg" />
+    <Content Include="Data\test\not-hot-dog\188505.jpg" />
+    <Content Include="Data\test\not-hot-dog\189482.jpg" />
+    <Content Include="Data\test\not-hot-dog\189787.jpg" />
+    <Content Include="Data\test\not-hot-dog\191085.jpg" />
+    <Content Include="Data\test\not-hot-dog\191302.jpg" />
+    <Content Include="Data\test\not-hot-dog\192132.jpg" />
+    <Content Include="Data\test\not-hot-dog\192632.jpg" />
+    <Content Include="Data\test\not-hot-dog\194973.jpg" />
+    <Content Include="Data\test\not-hot-dog\198099.jpg" />
+    <Content Include="Data\test\not-hot-dog\198445.jpg" />
+    <Content Include="Data\test\not-hot-dog\200168.jpg" />
+    <Content Include="Data\test\not-hot-dog\200448.jpg" />
+    <Content Include="Data\test\not-hot-dog\200553.jpg" />
+    <Content Include="Data\test\not-hot-dog\200639.jpg" />
+    <Content Include="Data\test\not-hot-dog\201362.jpg" />
+    <Content Include="Data\test\not-hot-dog\202247.jpg" />
+    <Content Include="Data\test\not-hot-dog\203613.jpg" />
+    <Content Include="Data\test\not-hot-dog\203924.jpg" />
+    <Content Include="Data\test\not-hot-dog\204100.jpg" />
+    <Content Include="Data\test\not-hot-dog\204132.jpg" />
+    <Content Include="Data\test\not-hot-dog\204169.jpg" />
+    <Content Include="Data\test\not-hot-dog\206271.jpg" />
+    <Content Include="Data\test\not-hot-dog\211949.jpg" />
+    <Content Include="Data\test\not-hot-dog\211973.jpg" />
+    <Content Include="Data\test\not-hot-dog\212348.jpg" />
+    <Content Include="Data\test\not-hot-dog\213387.jpg" />
+    <Content Include="Data\test\not-hot-dog\215927.jpg" />
+    <Content Include="Data\test\not-hot-dog\215931.jpg" />
+    <Content Include="Data\test\not-hot-dog\217445.jpg" />
+    <Content Include="Data\test\not-hot-dog\217607.jpg" />
+    <Content Include="Data\test\not-hot-dog\219778.jpg" />
+    <Content Include="Data\test\not-hot-dog\222138.jpg" />
+    <Content Include="Data\test\not-hot-dog\222586.jpg" />
+    <Content Include="Data\test\not-hot-dog\223676.jpg" />
+    <Content Include="Data\test\not-hot-dog\223944.jpg" />
+    <Content Include="Data\test\not-hot-dog\225525.jpg" />
+    <Content Include="Data\test\not-hot-dog\225804.jpg" />
+    <Content Include="Data\test\not-hot-dog\230015.jpg" />
+    <Content Include="Data\test\not-hot-dog\232844.jpg" />
+    <Content Include="Data\test\not-hot-dog\233172.jpg" />
+    <Content Include="Data\test\not-hot-dog\234706.jpg" />
+    <Content Include="Data\test\not-hot-dog\236973.jpg" />
+    <Content Include="Data\test\not-hot-dog\238410.jpg" />
+    <Content Include="Data\test\not-hot-dog\239724.jpg" />
+    <Content Include="Data\test\not-hot-dog\240760.jpg" />
+    <Content Include="Data\test\not-hot-dog\244006.jpg" />
+    <Content Include="Data\test\not-hot-dog\244609.jpg" />
+    <Content Include="Data\test\not-hot-dog\246510.jpg" />
+    <Content Include="Data\test\not-hot-dog\249430.jpg" />
+    <Content Include="Data\test\not-hot-dog\250720.jpg" />
+    <Content Include="Data\test\not-hot-dog\251128.jpg" />
+    <Content Include="Data\test\not-hot-dog\256347.jpg" />
+    <Content Include="Data\test\not-hot-dog\258877.jpg" />
+    <Content Include="Data\test\not-hot-dog\262882.jpg" />
+    <Content Include="Data\test\not-hot-dog\265743.jpg" />
+    <Content Include="Data\test\not-hot-dog\266364.jpg" />
+    <Content Include="Data\test\not-hot-dog\267713.jpg" />
+    <Content Include="Data\test\not-hot-dog\270122.jpg" />
+    <Content Include="Data\test\not-hot-dog\274368.jpg" />
+    <Content Include="Data\test\not-hot-dog\274711.jpg" />
+    <Content Include="Data\test\not-hot-dog\275673.jpg" />
+    <Content Include="Data\test\not-hot-dog\284999.jpg" />
+    <Content Include="Data\test\not-hot-dog\289256.jpg" />
+    <Content Include="Data\test\not-hot-dog\290229.jpg" />
+    <Content Include="Data\test\not-hot-dog\290382.jpg" />
+    <Content Include="Data\test\not-hot-dog\291636.jpg" />
+    <Content Include="Data\test\not-hot-dog\292607.jpg" />
+    <Content Include="Data\test\not-hot-dog\293052.jpg" />
+    <Content Include="Data\test\not-hot-dog\296039.jpg" />
+    <Content Include="Data\test\not-hot-dog\296611.jpg" />
+    <Content Include="Data\test\not-hot-dog\302329.jpg" />
+    <Content Include="Data\test\not-hot-dog\303460.jpg" />
+    <Content Include="Data\test\not-hot-dog\303809.jpg" />
+    <Content Include="Data\test\not-hot-dog\309651.jpg" />
+    <Content Include="Data\test\not-hot-dog\311779.jpg" />
+    <Content Include="Data\test\not-hot-dog\319830.jpg" />
+    <Content Include="Data\test\not-hot-dog\320734.jpg" />
+    <Content Include="Data\test\not-hot-dog\322067.jpg" />
+    <Content Include="Data\test\not-hot-dog\331674.jpg" />
+    <Content Include="Data\test\not-hot-dog\333385.jpg" />
+    <Content Include="Data\test\not-hot-dog\338101.jpg" />
+    <Content Include="Data\test\not-hot-dog\748088.jpg" />
+    <Content Include="Data\test\not-hot-dog\749374.jpg" />
+    <Content Include="Data\test\not-hot-dog\759160.jpg" />
+    <Content Include="Data\test\not-hot-dog\765053.jpg" />
+    <Content Include="Data\test\not-hot-dog\766638.jpg" />
+    <Content Include="Data\test\not-hot-dog\768793.jpg" />
+    <Content Include="Data\test\not-hot-dog\769437.jpg" />
+    <Content Include="Data\test\not-hot-dog\776077.jpg" />
+    <Content Include="Data\test\not-hot-dog\779193.jpg" />
+    <Content Include="Data\test\not-hot-dog\781137.jpg" />
+    <Content Include="Data\test\not-hot-dog\784510.jpg" />
+    <Content Include="Data\test\not-hot-dog\790763.jpg" />
+    <Content Include="Data\test\not-hot-dog\791662.jpg" />
+    <Content Include="Data\test\not-hot-dog\796326.jpg" />
+    <Content Include="Data\test\not-hot-dog\797686.jpg" />
+    <Content Include="Data\test\not-hot-dog\801827.jpg" />
+    <Content Include="Data\test\not-hot-dog\803895.jpg" />
+    <Content Include="Data\test\not-hot-dog\807258.jpg" />
+    <Content Include="Data\test\not-hot-dog\815394.jpg" />
+    <Content Include="Data\test\not-hot-dog\816725.jpg" />
+    <Content Include="Data\test\not-hot-dog\816756.jpg" />
+    <Content Include="Data\test\not-hot-dog\817533.jpg" />
+    <Content Include="Data\test\not-hot-dog\822411.jpg" />
+    <Content Include="Data\test\not-hot-dog\823536.jpg" />
+    <Content Include="Data\test\not-hot-dog\824157.jpg" />
+    <Content Include="Data\test\not-hot-dog\828189.jpg" />
+    <Content Include="Data\test\not-hot-dog\835998.jpg" />
+    <Content Include="Data\test\not-hot-dog\837058.jpg" />
+    <Content Include="Data\test\not-hot-dog\846311.jpg" />
+    <Content Include="Data\train\hot-dog\115434.jpg" />
+    <Content Include="Data\train\hot-dog\116486.jpg" />
+    <Content Include="Data\train\hot-dog\117749.jpg" />
+    <Content Include="Data\train\hot-dog\118875.jpg" />
+    <Content Include="Data\train\hot-dog\120471.jpg" />
+    <Content Include="Data\train\hot-dog\122007.jpg" />
+    <Content Include="Data\train\hot-dog\122606.jpg" />
+    <Content Include="Data\train\hot-dog\124323.jpg" />
+    <Content Include="Data\train\hot-dog\124987.jpg" />
+    <Content Include="Data\train\hot-dog\125329.jpg" />
+    <Content Include="Data\train\hot-dog\127117.jpg" />
+    <Content Include="Data\train\hot-dog\127252.jpg" />
+    <Content Include="Data\train\hot-dog\129092.jpg" />
+    <Content Include="Data\train\hot-dog\133012.jpg" />
+    <Content Include="Data\train\hot-dog\133015.jpg" />
+    <Content Include="Data\train\hot-dog\133245.jpg" />
+    <Content Include="Data\train\hot-dog\135628.jpg" />
+    <Content Include="Data\train\hot-dog\138933.jpg" />
+    <Content Include="Data\train\hot-dog\138937.jpg" />
+    <Content Include="Data\train\hot-dog\138969.jpg" />
+    <Content Include="Data\train\hot-dog\139177.jpg" />
+    <Content Include="Data\train\hot-dog\142835.jpg" />
+    <Content Include="Data\train\hot-dog\143012.jpg" />
+    <Content Include="Data\train\hot-dog\144956.jpg" />
+    <Content Include="Data\train\hot-dog\146227.jpg" />
+    <Content Include="Data\train\hot-dog\146834.jpg" />
+    <Content Include="Data\train\hot-dog\147874.jpg" />
+    <Content Include="Data\train\hot-dog\152106.jpg" />
+    <Content Include="Data\train\hot-dog\154409.jpg" />
+    <Content Include="Data\train\hot-dog\154545.jpg" />
+    <Content Include="Data\train\hot-dog\156126.jpg" />
+    <Content Include="Data\train\hot-dog\156135.jpg" />
+    <Content Include="Data\train\hot-dog\160274.jpg" />
+    <Content Include="Data\train\hot-dog\160523.jpg" />
+    <Content Include="Data\train\hot-dog\161911.jpg" />
+    <Content Include="Data\train\hot-dog\165005.jpg" />
+    <Content Include="Data\train\hot-dog\170212.jpg" />
+    <Content Include="Data\train\hot-dog\170452.jpg" />
+    <Content Include="Data\train\hot-dog\171607.jpg" />
+    <Content Include="Data\train\hot-dog\171875.jpg" />
+    <Content Include="Data\train\hot-dog\173995.jpg" />
+    <Content Include="Data\train\hot-dog\180961.jpg" />
+    <Content Include="Data\train\hot-dog\183400.jpg" />
+    <Content Include="Data\train\hot-dog\189511.jpg" />
+    <Content Include="Data\train\hot-dog\190809.jpg" />
+    <Content Include="Data\train\hot-dog\193755.jpg" />
+    <Content Include="Data\train\hot-dog\195251.jpg" />
+    <Content Include="Data\train\hot-dog\197257.jpg" />
+    <Content Include="Data\train\hot-dog\198641.jpg" />
+    <Content Include="Data\train\hot-dog\200438.jpg" />
+    <Content Include="Data\train\hot-dog\201986.jpg" />
+    <Content Include="Data\train\hot-dog\206995.jpg" />
+    <Content Include="Data\train\hot-dog\207291.jpg" />
+    <Content Include="Data\train\hot-dog\207335.jpg" />
+    <Content Include="Data\train\hot-dog\209306.jpg" />
+    <Content Include="Data\train\hot-dog\210271.jpg" />
+    <Content Include="Data\train\hot-dog\210861.jpg" />
+    <Content Include="Data\train\hot-dog\211824.jpg" />
+    <Content Include="Data\train\hot-dog\212515.jpg" />
+    <Content Include="Data\train\hot-dog\219273.jpg" />
+    <Content Include="Data\train\hot-dog\219922.jpg" />
+    <Content Include="Data\train\hot-dog\224850.jpg" />
+    <Content Include="Data\train\hot-dog\225367.jpg" />
+    <Content Include="Data\train\hot-dog\233179.jpg" />
+    <Content Include="Data\train\hot-dog\238581.jpg" />
+    <Content Include="Data\train\hot-dog\2417.jpg" />
+    <Content Include="Data\train\hot-dog\248122.jpg" />
+    <Content Include="Data\train\hot-dog\250715.jpg" />
+    <Content Include="Data\train\hot-dog\259058.jpg" />
+    <Content Include="Data\train\hot-dog\259418.jpg" />
+    <Content Include="Data\train\hot-dog\264487.jpg" />
+    <Content Include="Data\train\hot-dog\267629.jpg" />
+    <Content Include="Data\train\hot-dog\267988.jpg" />
+    <Content Include="Data\train\hot-dog\268919.jpg" />
+    <Content Include="Data\train\hot-dog\282294.jpg" />
+    <Content Include="Data\train\hot-dog\285214.jpg" />
+    <Content Include="Data\train\hot-dog\287752.jpg" />
+    <Content Include="Data\train\hot-dog\289042.jpg" />
+    <Content Include="Data\train\hot-dog\289472.jpg" />
+    <Content Include="Data\train\hot-dog\291354.jpg" />
+    <Content Include="Data\train\hot-dog\292683.jpg" />
+    <Content Include="Data\train\hot-dog\295307.jpg" />
+    <Content Include="Data\train\hot-dog\298744.jpg" />
+    <Content Include="Data\train\hot-dog\298757.jpg" />
+    <Content Include="Data\train\hot-dog\300150.jpg" />
+    <Content Include="Data\train\hot-dog\302949.jpg" />
+    <Content Include="Data\train\hot-dog\306950.jpg" />
+    <Content Include="Data\train\hot-dog\307557.jpg" />
+    <Content Include="Data\train\hot-dog\307874.jpg" />
+    <Content Include="Data\train\hot-dog\315220.jpg" />
+    <Content Include="Data\train\hot-dog\315602.jpg" />
+    <Content Include="Data\train\hot-dog\315747.jpg" />
+    <Content Include="Data\train\hot-dog\316636.jpg" />
+    <Content Include="Data\train\hot-dog\317564.jpg" />
+    <Content Include="Data\train\hot-dog\319114.jpg" />
+    <Content Include="Data\train\hot-dog\324480.jpg" />
+    <Content Include="Data\train\hot-dog\324507.jpg" />
+    <Content Include="Data\train\hot-dog\327851.jpg" />
+    <Content Include="Data\train\hot-dog\332886.jpg" />
+    <Content Include="Data\train\hot-dog\335113.jpg" />
+    <Content Include="Data\train\hot-dog\336873.jpg" />
+    <Content Include="Data\train\hot-dog\337987.jpg" />
+    <Content Include="Data\train\hot-dog\343270.jpg" />
+    <Content Include="Data\train\hot-dog\345704.jpg" />
+    <Content Include="Data\train\hot-dog\349375.jpg" />
+    <Content Include="Data\train\hot-dog\352638.jpg" />
+    <Content Include="Data\train\hot-dog\365524.jpg" />
+    <Content Include="Data\train\hot-dog\3690.jpg" />
+    <Content Include="Data\train\hot-dog\370167.jpg" />
+    <Content Include="Data\train\hot-dog\371082.jpg" />
+    <Content Include="Data\train\hot-dog\373020.jpg" />
+    <Content Include="Data\train\hot-dog\373912.jpg" />
+    <Content Include="Data\train\hot-dog\377852.jpg" />
+    <Content Include="Data\train\hot-dog\379311.jpg" />
+    <Content Include="Data\train\hot-dog\380645.jpg" />
+    <Content Include="Data\train\hot-dog\380963.jpg" />
+    <Content Include="Data\train\hot-dog\382188.jpg" />
+    <Content Include="Data\train\hot-dog\388733.jpg" />
+    <Content Include="Data\train\hot-dog\388827.jpg" />
+    <Content Include="Data\train\hot-dog\391898.jpg" />
+    <Content Include="Data\train\hot-dog\393123.jpg" />
+    <Content Include="Data\train\hot-dog\397071.jpg" />
+    <Content Include="Data\train\hot-dog\397466.jpg" />
+    <Content Include="Data\train\hot-dog\397696.jpg" />
+    <Content Include="Data\train\hot-dog\398941.jpg" />
+    <Content Include="Data\train\hot-dog\400228.jpg" />
+    <Content Include="Data\train\hot-dog\403561.jpg" />
+    <Content Include="Data\train\hot-dog\408504.jpg" />
+    <Content Include="Data\train\hot-dog\409435.jpg" />
+    <Content Include="Data\train\hot-dog\410713.jpg" />
+    <Content Include="Data\train\hot-dog\413426.jpg" />
+    <Content Include="Data\train\hot-dog\413825.jpg" />
+    <Content Include="Data\train\hot-dog\415744.jpg" />
+    <Content Include="Data\train\hot-dog\417155.jpg" />
+    <Content Include="Data\train\hot-dog\419255.jpg" />
+    <Content Include="Data\train\hot-dog\422730.jpg" />
+    <Content Include="Data\train\hot-dog\423659.jpg" />
+    <Content Include="Data\train\hot-dog\424960.jpg" />
+    <Content Include="Data\train\hot-dog\439441.jpg" />
+    <Content Include="Data\train\hot-dog\445366.jpg" />
+    <Content Include="Data\train\hot-dog\453463.jpg" />
+    <Content Include="Data\train\hot-dog\456751.jpg" />
+    <Content Include="Data\train\hot-dog\458164.jpg" />
+    <Content Include="Data\train\hot-dog\461937.jpg" />
+    <Content Include="Data\train\hot-dog\462004.jpg" />
+    <Content Include="Data\train\hot-dog\471340.jpg" />
+    <Content Include="Data\train\hot-dog\480916.jpg" />
+    <Content Include="Data\train\hot-dog\485835.jpg" />
+    <Content Include="Data\train\hot-dog\486658.jpg" />
+    <Content Include="Data\train\hot-dog\489624.jpg" />
+    <Content Include="Data\train\hot-dog\493727.jpg" />
+    <Content Include="Data\train\hot-dog\498141.jpg" />
+    <Content Include="Data\train\hot-dog\500768.jpg" />
+    <Content Include="Data\train\hot-dog\500771.jpg" />
+    <Content Include="Data\train\hot-dog\502977.jpg" />
+    <Content Include="Data\train\hot-dog\505563.jpg" />
+    <Content Include="Data\train\hot-dog\505584.jpg" />
+    <Content Include="Data\train\hot-dog\5079.jpg" />
+    <Content Include="Data\train\hot-dog\510674.jpg" />
+    <Content Include="Data\train\hot-dog\510955.jpg" />
+    <Content Include="Data\train\hot-dog\514482.jpg" />
+    <Content Include="Data\train\hot-dog\518867.jpg" />
+    <Content Include="Data\train\hot-dog\520065.jpg" />
+    <Content Include="Data\train\hot-dog\520905.jpg" />
+    <Content Include="Data\train\hot-dog\527074.jpg" />
+    <Content Include="Data\train\hot-dog\527633.jpg" />
+    <Content Include="Data\train\hot-dog\528022.jpg" />
+    <Content Include="Data\train\hot-dog\530316.jpg" />
+    <Content Include="Data\train\hot-dog\531567.jpg" />
+    <Content Include="Data\train\hot-dog\533172.jpg" />
+    <Content Include="Data\train\hot-dog\533521.jpg" />
+    <Content Include="Data\train\hot-dog\537584.jpg" />
+    <Content Include="Data\train\hot-dog\544416.jpg" />
+    <Content Include="Data\train\hot-dog\547307.jpg" />
+    <Content Include="Data\train\hot-dog\547312.jpg" />
+    <Content Include="Data\train\hot-dog\550512.jpg" />
+    <Content Include="Data\train\hot-dog\551784.jpg" />
+    <Content Include="Data\train\hot-dog\554307.jpg" />
+    <Content Include="Data\train\hot-dog\558890.jpg" />
+    <Content Include="Data\train\hot-dog\561681.jpg" />
+    <Content Include="Data\train\hot-dog\564558.jpg" />
+    <Content Include="Data\train\hot-dog\566784.jpg" />
+    <Content Include="Data\train\hot-dog\566965.jpg" />
+    <Content Include="Data\train\hot-dog\570799.jpg" />
+    <Content Include="Data\train\hot-dog\571081.jpg" />
+    <Content Include="Data\train\hot-dog\573731.jpg" />
+    <Content Include="Data\train\hot-dog\574379.jpg" />
+    <Content Include="Data\train\hot-dog\576265.jpg" />
+    <Content Include="Data\train\hot-dog\580378.jpg" />
+    <Content Include="Data\train\hot-dog\581166.jpg" />
+    <Content Include="Data\train\hot-dog\583811.jpg" />
+    <Content Include="Data\train\hot-dog\588881.jpg" />
+    <Content Include="Data\train\hot-dog\591179.jpg" />
+    <Content Include="Data\train\hot-dog\593867.jpg" />
+    <Content Include="Data\train\hot-dog\595636.jpg" />
+    <Content Include="Data\train\hot-dog\595968.jpg" />
+    <Content Include="Data\train\hot-dog\599728.jpg" />
+    <Content Include="Data\train\hot-dog\602204.jpg" />
+    <Content Include="Data\train\hot-dog\604245.jpg" />
+    <Content Include="Data\train\hot-dog\607287.jpg" />
+    <Content Include="Data\train\hot-dog\607289.jpg" />
+    <Content Include="Data\train\hot-dog\608168.jpg" />
+    <Content Include="Data\train\hot-dog\612440.jpg" />
+    <Content Include="Data\train\hot-dog\618167.jpg" />
+    <Content Include="Data\train\hot-dog\619671.jpg" />
+    <Content Include="Data\train\hot-dog\623958.jpg" />
+    <Content Include="Data\train\hot-dog\628106.jpg" />
+    <Content Include="Data\train\hot-dog\632174.jpg" />
+    <Content Include="Data\train\hot-dog\634232.jpg" />
+    <Content Include="Data\train\hot-dog\635712.jpg" />
+    <Content Include="Data\train\hot-dog\635715.jpg" />
+    <Content Include="Data\train\hot-dog\640478.jpg" />
+    <Content Include="Data\train\hot-dog\642331.jpg" />
+    <Content Include="Data\train\hot-dog\646412.jpg" />
+    <Content Include="Data\train\hot-dog\650514.jpg" />
+    <Content Include="Data\train\hot-dog\651101.jpg" />
+    <Content Include="Data\train\hot-dog\652826.jpg" />
+    <Content Include="Data\train\hot-dog\654831.jpg" />
+    <Content Include="Data\train\hot-dog\665987.jpg" />
+    <Content Include="Data\train\hot-dog\667655.jpg" />
+    <Content Include="Data\train\hot-dog\677481.jpg" />
+    <Content Include="Data\train\hot-dog\679424.jpg" />
+    <Content Include="Data\train\hot-dog\690320.jpg" />
+    <Content Include="Data\train\hot-dog\690327.jpg" />
+    <Content Include="Data\train\hot-dog\691952.jpg" />
+    <Content Include="Data\train\hot-dog\697073.jpg" />
+    <Content Include="Data\train\hot-dog\697329.jpg" />
+    <Content Include="Data\train\hot-dog\701201.jpg" />
+    <Content Include="Data\train\hot-dog\701763.jpg" />
+    <Content Include="Data\train\hot-dog\703550.jpg" />
+    <Content Include="Data\train\hot-dog\704107.jpg" />
+    <Content Include="Data\train\hot-dog\704826.jpg" />
+    <Content Include="Data\train\hot-dog\707784.jpg" />
+    <Content Include="Data\train\hot-dog\716049.jpg" />
+    <Content Include="Data\train\hot-dog\717652.jpg" />
+    <Content Include="Data\train\hot-dog\718939.jpg" />
+    <Content Include="Data\train\hot-dog\723890.jpg" />
+    <Content Include="Data\train\hot-dog\724711.jpg" />
+    <Content Include="Data\train\hot-dog\728442.jpg" />
+    <Content Include="Data\train\hot-dog\731744.jpg" />
+    <Content Include="Data\train\hot-dog\739229.jpg" />
+    <Content Include="Data\train\hot-dog\741637.jpg" />
+    <Content Include="Data\train\hot-dog\741652.jpg" />
+    <Content Include="Data\train\hot-dog\745739.jpg" />
+    <Content Include="Data\train\hot-dog\745741.jpg" />
+    <Content Include="Data\train\hot-dog\752871.jpg" />
+    <Content Include="Data\train\hot-dog\756061.jpg" />
+    <Content Include="Data\train\hot-dog\760045.jpg" />
+    <Content Include="Data\train\hot-dog\762910.jpg" />
+    <Content Include="Data\train\hot-dog\76722.jpg" />
+    <Content Include="Data\train\hot-dog\784362.jpg" />
+    <Content Include="Data\train\hot-dog\7896.jpg" />
+    <Content Include="Data\train\hot-dog\800992.jpg" />
+    <Content Include="Data\train\hot-dog\803307.jpg" />
+    <Content Include="Data\train\hot-dog\805852.jpg" />
+    <Content Include="Data\train\hot-dog\807265.jpg" />
+    <Content Include="Data\train\hot-dog\807481.jpg" />
+    <Content Include="Data\train\hot-dog\815805.jpg" />
+    <Content Include="Data\train\hot-dog\818233.jpg" />
+    <Content Include="Data\train\hot-dog\824342.jpg" />
+    <Content Include="Data\train\hot-dog\826706.jpg" />
+    <Content Include="Data\train\hot-dog\829968.jpg" />
+    <Content Include="Data\train\hot-dog\838604.jpg" />
+    <Content Include="Data\train\hot-dog\839783.jpg" />
+    <Content Include="Data\train\hot-dog\840832.jpg" />
+    <Content Include="Data\train\hot-dog\840839.jpg" />
+    <Content Include="Data\train\hot-dog\841980.jpg" />
+    <Content Include="Data\train\hot-dog\842474.jpg" />
+    <Content Include="Data\train\hot-dog\853994.jpg" />
+    <Content Include="Data\train\hot-dog\856178.jpg" />
+    <Content Include="Data\train\hot-dog\857110.jpg" />
+    <Content Include="Data\train\hot-dog\864518.jpg" />
+    <Content Include="Data\train\hot-dog\865184.jpg" />
+    <Content Include="Data\train\hot-dog\867751.jpg" />
+    <Content Include="Data\train\hot-dog\867991.jpg" />
+    <Content Include="Data\train\hot-dog\869853.jpg" />
+    <Content Include="Data\train\hot-dog\884796.jpg" />
+    <Content Include="Data\train\hot-dog\888267.jpg" />
+    <Content Include="Data\train\hot-dog\891949.jpg" />
+    <Content Include="Data\train\hot-dog\893274.jpg" />
+    <Content Include="Data\train\hot-dog\893996.jpg" />
+    <Content Include="Data\train\hot-dog\898576.jpg" />
+    <Content Include="Data\train\hot-dog\907088.jpg" />
+    <Content Include="Data\train\hot-dog\910098.jpg" />
+    <Content Include="Data\train\hot-dog\910827.jpg" />
+    <Content Include="Data\train\hot-dog\916396.jpg" />
+    <Content Include="Data\train\hot-dog\917699.jpg" />
+    <Content Include="Data\train\hot-dog\920993.jpg" />
+    <Content Include="Data\train\hot-dog\923240.jpg" />
+    <Content Include="Data\train\hot-dog\926070.jpg" />
+    <Content Include="Data\train\hot-dog\930181.jpg" />
+    <Content Include="Data\train\hot-dog\930190.jpg" />
+    <Content Include="Data\train\hot-dog\935952.jpg" />
+    <Content Include="Data\train\hot-dog\938937.jpg" />
+    <Content Include="Data\train\hot-dog\940404.jpg" />
+    <Content Include="Data\train\hot-dog\941035.jpg" />
+    <Content Include="Data\train\hot-dog\950384.jpg" />
+    <Content Include="Data\train\hot-dog\950413.jpg" />
+    <Content Include="Data\train\hot-dog\951103.jpg" />
+    <Content Include="Data\train\hot-dog\952378.jpg" />
+    <Content Include="Data\train\not-hot-dpg\100135.jpg" />
+    <Content Include="Data\train\not-hot-dpg\100148.jpg" />
+    <Content Include="Data\train\not-hot-dpg\100274.jpg" />
+    <Content Include="Data\train\not-hot-dpg\100945.jpg" />
+    <Content Include="Data\train\not-hot-dpg\1164.jpg" />
+    <Content Include="Data\train\not-hot-dpg\1167.jpg" />
+    <Content Include="Data\train\not-hot-dpg\13023.jpg" />
+    <Content Include="Data\train\not-hot-dpg\13080.jpg" />
+    <Content Include="Data\train\not-hot-dpg\13719.jpg" />
+    <Content Include="Data\train\not-hot-dpg\13983.jpg" />
+    <Content Include="Data\train\not-hot-dpg\14142.jpg" />
+    <Content Include="Data\train\not-hot-dpg\14484.jpg" />
+    <Content Include="Data\train\not-hot-dpg\15420.jpg" />
+    <Content Include="Data\train\not-hot-dpg\15580.jpg" />
+    <Content Include="Data\train\not-hot-dpg\15787.jpg" />
+    <Content Include="Data\train\not-hot-dpg\15933.jpg" />
+    <Content Include="Data\train\not-hot-dpg\17304.jpg" />
+    <Content Include="Data\train\not-hot-dpg\17394.jpg" />
+    <Content Include="Data\train\not-hot-dpg\17688.jpg" />
+    <Content Include="Data\train\not-hot-dpg\17969.jpg" />
+    <Content Include="Data\train\not-hot-dpg\18985.jpg" />
+    <Content Include="Data\train\not-hot-dpg\19143.jpg" />
+    <Content Include="Data\train\not-hot-dpg\19487.jpg" />
+    <Content Include="Data\train\not-hot-dpg\197.jpg" />
+    <Content Include="Data\train\not-hot-dpg\20087.jpg" />
+    <Content Include="Data\train\not-hot-dpg\20215.jpg" />
+    <Content Include="Data\train\not-hot-dpg\20532.jpg" />
+    <Content Include="Data\train\not-hot-dpg\20627.jpg" />
+    <Content Include="Data\train\not-hot-dpg\20777.jpg" />
+    <Content Include="Data\train\not-hot-dpg\20787.jpg" />
+    <Content Include="Data\train\not-hot-dpg\20797.jpg" />
+    <Content Include="Data\train\not-hot-dpg\20983.jpg" />
+    <Content Include="Data\train\not-hot-dpg\21327.jpg" />
+    <Content Include="Data\train\not-hot-dpg\21440.jpg" />
+    <Content Include="Data\train\not-hot-dpg\22080.jpg" />
+    <Content Include="Data\train\not-hot-dpg\22489.jpg" />
+    <Content Include="Data\train\not-hot-dpg\22777.jpg" />
+    <Content Include="Data\train\not-hot-dpg\23184.jpg" />
+    <Content Include="Data\train\not-hot-dpg\23199.jpg" />
+    <Content Include="Data\train\not-hot-dpg\23601.jpg" />
+    <Content Include="Data\train\not-hot-dpg\23739.jpg" />
+    <Content Include="Data\train\not-hot-dpg\24145.jpg" />
+    <Content Include="Data\train\not-hot-dpg\24159.jpg" />
+    <Content Include="Data\train\not-hot-dpg\24479.jpg" />
+    <Content Include="Data\train\not-hot-dpg\24656.jpg" />
+    <Content Include="Data\train\not-hot-dpg\24844.jpg" />
+    <Content Include="Data\train\not-hot-dpg\25026.jpg" />
+    <Content Include="Data\train\not-hot-dpg\25414.jpg" />
+    <Content Include="Data\train\not-hot-dpg\25784.jpg" />
+    <Content Include="Data\train\not-hot-dpg\26078.jpg" />
+    <Content Include="Data\train\not-hot-dpg\26279.jpg" />
+    <Content Include="Data\train\not-hot-dpg\26489.jpg" />
+    <Content Include="Data\train\not-hot-dpg\27330.jpg" />
+    <Content Include="Data\train\not-hot-dpg\27410.jpg" />
+    <Content Include="Data\train\not-hot-dpg\27415.jpg" />
+    <Content Include="Data\train\not-hot-dpg\27963.jpg" />
+    <Content Include="Data\train\not-hot-dpg\28387.jpg" />
+    <Content Include="Data\train\not-hot-dpg\28783.jpg" />
+    <Content Include="Data\train\not-hot-dpg\28996.jpg" />
+    <Content Include="Data\train\not-hot-dpg\29204.jpg" />
+    <Content Include="Data\train\not-hot-dpg\29417.jpg" />
+    <Content Include="Data\train\not-hot-dpg\29869.jpg" />
+    <Content Include="Data\train\not-hot-dpg\30395.jpg" />
+    <Content Include="Data\train\not-hot-dpg\30731.jpg" />
+    <Content Include="Data\train\not-hot-dpg\30892.jpg" />
+    <Content Include="Data\train\not-hot-dpg\31881.jpg" />
+    <Content Include="Data\train\not-hot-dpg\32004.jpg" />
+    <Content Include="Data\train\not-hot-dpg\32199.jpg" />
+    <Content Include="Data\train\not-hot-dpg\32556.jpg" />
+    <Content Include="Data\train\not-hot-dpg\32666.jpg" />
+    <Content Include="Data\train\not-hot-dpg\32693.jpg" />
+    <Content Include="Data\train\not-hot-dpg\33259.jpg" />
+    <Content Include="Data\train\not-hot-dpg\33485.jpg" />
+    <Content Include="Data\train\not-hot-dpg\33783.jpg" />
+    <Content Include="Data\train\not-hot-dpg\34632.jpg" />
+    <Content Include="Data\train\not-hot-dpg\34793.jpg" />
+    <Content Include="Data\train\not-hot-dpg\35133.jpg" />
+    <Content Include="Data\train\not-hot-dpg\35235.jpg" />
+    <Content Include="Data\train\not-hot-dpg\35430.jpg" />
+    <Content Include="Data\train\not-hot-dpg\36042.jpg" />
+    <Content Include="Data\train\not-hot-dpg\36081.jpg" />
+    <Content Include="Data\train\not-hot-dpg\36147.jpg" />
+    <Content Include="Data\train\not-hot-dpg\36370.jpg" />
+    <Content Include="Data\train\not-hot-dpg\37384.jpg" />
+    <Content Include="Data\train\not-hot-dpg\37565.jpg" />
+    <Content Include="Data\train\not-hot-dpg\37649.jpg" />
+    <Content Include="Data\train\not-hot-dpg\38337.jpg" />
+    <Content Include="Data\train\not-hot-dpg\38349.jpg" />
+    <Content Include="Data\train\not-hot-dpg\38442.jpg" />
+    <Content Include="Data\train\not-hot-dpg\38615.jpg" />
+    <Content Include="Data\train\not-hot-dpg\38768.jpg" />
+    <Content Include="Data\train\not-hot-dpg\39461.jpg" />
+    <Content Include="Data\train\not-hot-dpg\40094.jpg" />
+    <Content Include="Data\train\not-hot-dpg\40231.jpg" />
+    <Content Include="Data\train\not-hot-dpg\40449.jpg" />
+    <Content Include="Data\train\not-hot-dpg\40762.jpg" />
+    <Content Include="Data\train\not-hot-dpg\40944.jpg" />
+    <Content Include="Data\train\not-hot-dpg\40947.jpg" />
+    <Content Include="Data\train\not-hot-dpg\41693.jpg" />
+    <Content Include="Data\train\not-hot-dpg\4176.jpg" />
+    <Content Include="Data\train\not-hot-dpg\42125.jpg" />
+    <Content Include="Data\train\not-hot-dpg\42252.jpg" />
+    <Content Include="Data\train\not-hot-dpg\42487.jpg" />
+    <Content Include="Data\train\not-hot-dpg\42609.jpg" />
+    <Content Include="Data\train\not-hot-dpg\42954.jpg" />
+    <Content Include="Data\train\not-hot-dpg\43376.jpg" />
+    <Content Include="Data\train\not-hot-dpg\43636.jpg" />
+    <Content Include="Data\train\not-hot-dpg\43886.jpg" />
+    <Content Include="Data\train\not-hot-dpg\43924.jpg" />
+    <Content Include="Data\train\not-hot-dpg\44035.jpg" />
+    <Content Include="Data\train\not-hot-dpg\44449.jpg" />
+    <Content Include="Data\train\not-hot-dpg\44578.jpg" />
+    <Content Include="Data\train\not-hot-dpg\44810.jpg" />
+    <Content Include="Data\train\not-hot-dpg\44859.jpg" />
+    <Content Include="Data\train\not-hot-dpg\45035.jpg" />
+    <Content Include="Data\train\not-hot-dpg\45059.jpg" />
+    <Content Include="Data\train\not-hot-dpg\45200.jpg" />
+    <Content Include="Data\train\not-hot-dpg\45817.jpg" />
+    <Content Include="Data\train\not-hot-dpg\45896.jpg" />
+    <Content Include="Data\train\not-hot-dpg\46246.jpg" />
+    <Content Include="Data\train\not-hot-dpg\46325.jpg" />
+    <Content Include="Data\train\not-hot-dpg\46401.jpg" />
+    <Content Include="Data\train\not-hot-dpg\47115.jpg" />
+    <Content Include="Data\train\not-hot-dpg\47388.jpg" />
+    <Content Include="Data\train\not-hot-dpg\4770.jpg" />
+    <Content Include="Data\train\not-hot-dpg\4781.jpg" />
+    <Content Include="Data\train\not-hot-dpg\47909.jpg" />
+    <Content Include="Data\train\not-hot-dpg\48052.jpg" />
+    <Content Include="Data\train\not-hot-dpg\48073.jpg" />
+    <Content Include="Data\train\not-hot-dpg\48151.jpg" />
+    <Content Include="Data\train\not-hot-dpg\48208.jpg" />
+    <Content Include="Data\train\not-hot-dpg\48506.jpg" />
+    <Content Include="Data\train\not-hot-dpg\48840.jpg" />
+    <Content Include="Data\train\not-hot-dpg\4889.jpg" />
+    <Content Include="Data\train\not-hot-dpg\49803.jpg" />
+    <Content Include="Data\train\not-hot-dpg\50193.jpg" />
+    <Content Include="Data\train\not-hot-dpg\50277.jpg" />
+    <Content Include="Data\train\not-hot-dpg\51368.jpg" />
+    <Content Include="Data\train\not-hot-dpg\51481.jpg" />
+    <Content Include="Data\train\not-hot-dpg\51533.jpg" />
+    <Content Include="Data\train\not-hot-dpg\51678.jpg" />
+    <Content Include="Data\train\not-hot-dpg\52510.jpg" />
+    <Content Include="Data\train\not-hot-dpg\52934.jpg" />
+    <Content Include="Data\train\not-hot-dpg\53217.jpg" />
+    <Content Include="Data\train\not-hot-dpg\53233.jpg" />
+    <Content Include="Data\train\not-hot-dpg\53393.jpg" />
+    <Content Include="Data\train\not-hot-dpg\53758.jpg" />
+    <Content Include="Data\train\not-hot-dpg\54252.jpg" />
+    <Content Include="Data\train\not-hot-dpg\54461.jpg" />
+    <Content Include="Data\train\not-hot-dpg\54529.jpg" />
+    <Content Include="Data\train\not-hot-dpg\54540.jpg" />
+    <Content Include="Data\train\not-hot-dpg\54685.jpg" />
+    <Content Include="Data\train\not-hot-dpg\55601.jpg" />
+    <Content Include="Data\train\not-hot-dpg\55639.jpg" />
+    <Content Include="Data\train\not-hot-dpg\56240.jpg" />
+    <Content Include="Data\train\not-hot-dpg\56337.jpg" />
+    <Content Include="Data\train\not-hot-dpg\56409.jpg" />
+    <Content Include="Data\train\not-hot-dpg\56449.jpg" />
+    <Content Include="Data\train\not-hot-dpg\57594.jpg" />
+    <Content Include="Data\train\not-hot-dpg\5762.jpg" />
+    <Content Include="Data\train\not-hot-dpg\5764.jpg" />
+    <Content Include="Data\train\not-hot-dpg\5813.jpg" />
+    <Content Include="Data\train\not-hot-dpg\58448.jpg" />
+    <Content Include="Data\train\not-hot-dpg\58787.jpg" />
+    <Content Include="Data\train\not-hot-dpg\58856.jpg" />
+    <Content Include="Data\train\not-hot-dpg\59144.jpg" />
+    <Content Include="Data\train\not-hot-dpg\59445.jpg" />
+    <Content Include="Data\train\not-hot-dpg\59497.jpg" />
+    <Content Include="Data\train\not-hot-dpg\59675.jpg" />
+    <Content Include="Data\train\not-hot-dpg\60069.jpg" />
+    <Content Include="Data\train\not-hot-dpg\60207.jpg" />
+    <Content Include="Data\train\not-hot-dpg\6021.jpg" />
+    <Content Include="Data\train\not-hot-dpg\60306.jpg" />
+    <Content Include="Data\train\not-hot-dpg\60633.jpg" />
+    <Content Include="Data\train\not-hot-dpg\60655.jpg" />
+    <Content Include="Data\train\not-hot-dpg\60819.jpg" />
+    <Content Include="Data\train\not-hot-dpg\60844.jpg" />
+    <Content Include="Data\train\not-hot-dpg\6127.jpg" />
+    <Content Include="Data\train\not-hot-dpg\61656.jpg" />
+    <Content Include="Data\train\not-hot-dpg\61822.jpg" />
+    <Content Include="Data\train\not-hot-dpg\62084.jpg" />
+    <Content Include="Data\train\not-hot-dpg\6229.jpg" />
+    <Content Include="Data\train\not-hot-dpg\62484.jpg" />
+    <Content Include="Data\train\not-hot-dpg\6261.jpg" />
+    <Content Include="Data\train\not-hot-dpg\62622.jpg" />
+    <Content Include="Data\train\not-hot-dpg\62663.jpg" />
+    <Content Include="Data\train\not-hot-dpg\63099.jpg" />
+    <Content Include="Data\train\not-hot-dpg\63480.jpg" />
+    <Content Include="Data\train\not-hot-dpg\63878.jpg" />
+    <Content Include="Data\train\not-hot-dpg\63947.jpg" />
+    <Content Include="Data\train\not-hot-dpg\64906.jpg" />
+    <Content Include="Data\train\not-hot-dpg\64960.jpg" />
+    <Content Include="Data\train\not-hot-dpg\65097.jpg" />
+    <Content Include="Data\train\not-hot-dpg\65128.jpg" />
+    <Content Include="Data\train\not-hot-dpg\65608.jpg" />
+    <Content Include="Data\train\not-hot-dpg\65685.jpg" />
+    <Content Include="Data\train\not-hot-dpg\66183.jpg" />
+    <Content Include="Data\train\not-hot-dpg\66207.jpg" />
+    <Content Include="Data\train\not-hot-dpg\66533.jpg" />
+    <Content Include="Data\train\not-hot-dpg\66858.jpg" />
+    <Content Include="Data\train\not-hot-dpg\6709.jpg" />
+    <Content Include="Data\train\not-hot-dpg\68684.jpg" />
+    <Content Include="Data\train\not-hot-dpg\6926.jpg" />
+    <Content Include="Data\train\not-hot-dpg\69328.jpg" />
+    <Content Include="Data\train\not-hot-dpg\69414.jpg" />
+    <Content Include="Data\train\not-hot-dpg\69564.jpg" />
+    <Content Include="Data\train\not-hot-dpg\69645.jpg" />
+    <Content Include="Data\train\not-hot-dpg\70218.jpg" />
+    <Content Include="Data\train\not-hot-dpg\70456.jpg" />
+    <Content Include="Data\train\not-hot-dpg\7056.jpg" />
+    <Content Include="Data\train\not-hot-dpg\71511.jpg" />
+    <Content Include="Data\train\not-hot-dpg\71701.jpg" />
+    <Content Include="Data\train\not-hot-dpg\71719.jpg" />
+    <Content Include="Data\train\not-hot-dpg\72090.jpg" />
+    <Content Include="Data\train\not-hot-dpg\72716.jpg" />
+    <Content Include="Data\train\not-hot-dpg\73697.jpg" />
+    <Content Include="Data\train\not-hot-dpg\7394.jpg" />
+    <Content Include="Data\train\not-hot-dpg\75537.jpg" />
+    <Content Include="Data\train\not-hot-dpg\75638.jpg" />
+    <Content Include="Data\train\not-hot-dpg\76021.jpg" />
+    <Content Include="Data\train\not-hot-dpg\76061.jpg" />
+    <Content Include="Data\train\not-hot-dpg\76271.jpg" />
+    <Content Include="Data\train\not-hot-dpg\76464.jpg" />
+    <Content Include="Data\train\not-hot-dpg\76466.jpg" />
+    <Content Include="Data\train\not-hot-dpg\77677.jpg" />
+    <Content Include="Data\train\not-hot-dpg\78171.jpg" />
+    <Content Include="Data\train\not-hot-dpg\7847.jpg" />
+    <Content Include="Data\train\not-hot-dpg\79489.jpg" />
+    <Content Include="Data\train\not-hot-dpg\80190.jpg" />
+    <Content Include="Data\train\not-hot-dpg\80215.jpg" />
+    <Content Include="Data\train\not-hot-dpg\80315.jpg" />
+    <Content Include="Data\train\not-hot-dpg\80750.jpg" />
+    <Content Include="Data\train\not-hot-dpg\80865.jpg" />
+    <Content Include="Data\train\not-hot-dpg\80887.jpg" />
+    <Content Include="Data\train\not-hot-dpg\8119.jpg" />
+    <Content Include="Data\train\not-hot-dpg\81332.jpg" />
+    <Content Include="Data\train\not-hot-dpg\81543.jpg" />
+    <Content Include="Data\train\not-hot-dpg\81779.jpg" />
+    <Content Include="Data\train\not-hot-dpg\81939.jpg" />
+    <Content Include="Data\train\not-hot-dpg\82274.jpg" />
+    <Content Include="Data\train\not-hot-dpg\82535.jpg" />
+    <Content Include="Data\train\not-hot-dpg\82578.jpg" />
+    <Content Include="Data\train\not-hot-dpg\82772.jpg" />
+    <Content Include="Data\train\not-hot-dpg\82946.jpg" />
+    <Content Include="Data\train\not-hot-dpg\83053.jpg" />
+    <Content Include="Data\train\not-hot-dpg\8350.jpg" />
+    <Content Include="Data\train\not-hot-dpg\83538.jpg" />
+    <Content Include="Data\train\not-hot-dpg\85375.jpg" />
+    <Content Include="Data\train\not-hot-dpg\85398.jpg" />
+    <Content Include="Data\train\not-hot-dpg\85452.jpg" />
+    <Content Include="Data\train\not-hot-dpg\85514.jpg" />
+    <Content Include="Data\train\not-hot-dpg\86180.jpg" />
+    <Content Include="Data\train\not-hot-dpg\86528.jpg" />
+    <Content Include="Data\train\not-hot-dpg\86782.jpg" />
+    <Content Include="Data\train\not-hot-dpg\86812.jpg" />
+    <Content Include="Data\train\not-hot-dpg\87020.jpg" />
+    <Content Include="Data\train\not-hot-dpg\87125.jpg" />
+    <Content Include="Data\train\not-hot-dpg\87246.jpg" />
+    <Content Include="Data\train\not-hot-dpg\88158.jpg" />
+    <Content Include="Data\train\not-hot-dpg\89027.jpg" />
+    <Content Include="Data\train\not-hot-dpg\8917.jpg" />
+    <Content Include="Data\train\not-hot-dpg\89197.jpg" />
+    <Content Include="Data\train\not-hot-dpg\89502.jpg" />
+    <Content Include="Data\train\not-hot-dpg\8984.jpg" />
+    <Content Include="Data\train\not-hot-dpg\89892.jpg" />
+    <Content Include="Data\train\not-hot-dpg\89974.jpg" />
+    <Content Include="Data\train\not-hot-dpg\90116.jpg" />
+    <Content Include="Data\train\not-hot-dpg\90167.jpg" />
+    <Content Include="Data\train\not-hot-dpg\90481.jpg" />
+    <Content Include="Data\train\not-hot-dpg\9053.jpg" />
+    <Content Include="Data\train\not-hot-dpg\90923.jpg" />
+    <Content Include="Data\train\not-hot-dpg\90930.jpg" />
+    <Content Include="Data\train\not-hot-dpg\90989.jpg" />
+    <Content Include="Data\train\not-hot-dpg\91432.jpg" />
+    <Content Include="Data\train\not-hot-dpg\91708.jpg" />
+    <Content Include="Data\train\not-hot-dpg\92128.jpg" />
+    <Content Include="Data\train\not-hot-dpg\92235.jpg" />
+    <Content Include="Data\train\not-hot-dpg\92331.jpg" />
+    <Content Include="Data\train\not-hot-dpg\93653.jpg" />
+    <Content Include="Data\train\not-hot-dpg\93961.jpg" />
+    <Content Include="Data\train\not-hot-dpg\94215.jpg" />
+    <Content Include="Data\train\not-hot-dpg\9547.jpg" />
+    <Content Include="Data\train\not-hot-dpg\9555.jpg" />
+    <Content Include="Data\train\not-hot-dpg\95565.jpg" />
+    <Content Include="Data\train\not-hot-dpg\95572.jpg" />
+    <Content Include="Data\train\not-hot-dpg\96213.jpg" />
+    <Content Include="Data\train\not-hot-dpg\96357.jpg" />
+    <Content Include="Data\train\not-hot-dpg\96524.jpg" />
+    <Content Include="Data\train\not-hot-dpg\9657.jpg" />
+    <Content Include="Data\train\not-hot-dpg\96935.jpg" />
+    <Content Include="Data\train\not-hot-dpg\97656.jpg" />
+    <Content Include="Data\train\not-hot-dpg\98607.jpg" />
+    <Content Include="Data\train\not-hot-dpg\98617.jpg" />
+    <Content Include="Data\train\not-hot-dpg\98675.jpg" />
+    <Content Include="Data\train\not-hot-dpg\99010.jpg" />
+    <Content Include="Data\train\not-hot-dpg\99136.jpg" />
+    <Content Include="Data\train\not-hot-dpg\99201.jpg" />
+    <Content Include="Data\train\not-hot-dpg\99604.jpg" />
+    <Content Include="Data\train\not-hot-dpg\99890.jpg" />
+    <Content Include="Data\train\not-hot-dpg\99934.jpg" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.ML.CpuMath.0.11.0\build\netstandard2.0\Microsoft.ML.CpuMath.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.CpuMath.0.11.0\build\netstandard2.0\Microsoft.ML.CpuMath.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ML.0.11.0\build\netstandard2.0\Microsoft.ML.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.0.11.0\build\netstandard2.0\Microsoft.ML.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ML.0.11.0\build\netstandard2.0\Microsoft.ML.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.0.11.0\build\netstandard2.0\Microsoft.ML.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ML.TensorFlow.Redist.0.11.0\build\netstandard2.0\Microsoft.ML.TensorFlow.Redist.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.TensorFlow.Redist.0.11.0\build\netstandard2.0\Microsoft.ML.TensorFlow.Redist.props'))" />
+  </Target>
+  <Import Project="..\packages\Microsoft.ML.0.11.0\build\netstandard2.0\Microsoft.ML.targets" Condition="Exists('..\packages\Microsoft.ML.0.11.0\build\netstandard2.0\Microsoft.ML.targets')" />
+</Project>
