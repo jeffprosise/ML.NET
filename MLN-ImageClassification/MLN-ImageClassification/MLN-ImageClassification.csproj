@@ -144,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Model\tensorflow_inception_graph.pb" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
@@ -1148,6 +1149,7 @@
     <Content Include="Data\train\not-hot-dog\99604.jpg" />
     <Content Include="Data\train\not-hot-dog\99890.jpg" />
     <Content Include="Data\train\not-hot-dog\99934.jpg" />
+    <Content Include="Model\imagenet_comp_graph_label_strings.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

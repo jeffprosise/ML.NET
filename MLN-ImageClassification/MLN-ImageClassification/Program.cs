@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ML;
 using Microsoft.ML.Data;
+using Microsoft.ML.ImageAnalytics;
 
 namespace MLN_ImageClassification
 {
@@ -17,6 +18,9 @@ namespace MLN_ImageClassification
         private static readonly string _notHotDogTestImagesPath = "..\\..\\..\\Data\\test\\not-hot-dog";
         private static readonly string _hotDogImagePath = "..\\..\\..\\Data\\predict\\1007.jpg";
         private static readonly string _sushiImagePath = "..\\..\\..\\Data\\predict\\1008.jpg";
+        private static readonly string _modelPath = "..\\..\\..\\Model\\tensorflow_inception_graph.pb";
+        private static readonly string _labelToKey = "labelTokey";
+        private static readonly string _imageReal = "ImageReal";
 
         static void Main(string[] args)
         {
@@ -26,6 +30,19 @@ namespace MLN_ImageClassification
             var trainingData = new List<ImageData>();
             LoadImageData(trainingData, _hotDogTrainImagesPath, "hotdog");
             LoadImageData(trainingData, _notHotDogTrainImagesPath, "nothotdog");
+
+            // Build the model
+            var estimator = context.Transforms.Conversion.MapValueToKey(outputColumnName: _labelToKey, inputColumnName: "Label")
+                .Append(context.Transforms.LoadImages(Path.GetFullPath(_hotDogTrainImagesPath), (_imageReal, nameof(ImageData.ImagePath)))
+                .Append(context.Transforms.LoadImages(Path.GetFullPath(_notHotDogTrainImagesPath), (_imageReal, nameof(ImageData.ImagePath)))
+                .Append(context.Transforms.ResizeImages(outputColumnName: _imageReal, imageWidth: InceptionSettings.ImageWidth, imageHeight: InceptionSettings.ImageHeight, inputColumnName: _imageReal))
+                .Append(context.Transforms.ExtractPixels(new ImagePixelExtractingEstimator.ColumnOptions
+                (name: "input", inputColumnName: _imageReal, interleave: InceptionSettings.ChannelsLast, offset: InceptionSettings.Mean)))
+                .Append(context.Transforms.ScoreTensorFlowModel(modelLocation: Path.GetFullPath(_modelPath), outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }))
+                .Append(context.MulticlassClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
+                .Append(context.Transforms.Conversion.MapKeyToValue(("PredictedLabelValue", DefaultColumnNames.PredictedLabel)))));
+
+            // Train the model
 
 
 
