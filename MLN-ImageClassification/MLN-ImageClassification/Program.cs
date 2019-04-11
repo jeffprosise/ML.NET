@@ -24,34 +24,29 @@ namespace MLN_ImageClassification
 
             // Load the training data
             var trainingData = new List<ImageData>();
-            var files = Directory.EnumerateFiles(_hotDogTrainImagesPath);
+            LoadImageData(trainingData, _hotDogTrainImagesPath, "hotdog");
+            LoadImageData(trainingData, _notHotDogTrainImagesPath, "nothotdog");
 
-            foreach(var file in files)
-            {
-                var imageData = new ImageData
-                {
-                    ImagePath = Path.GetFullPath($"{_hotDogTrainImagesPath}\\{file}"),
-                    Label = "hotdog"
-                };
 
-                trainingData.Add(imageData);
-            }
 
-            files = Directory.EnumerateFiles(_notHotDogTrainImagesPath);
+
+
+        }
+
+        private static void LoadImageData(List<ImageData> images, string path, string label)
+        {
+            var files = Directory.EnumerateFiles(path);
 
             foreach (var file in files)
             {
                 var imageData = new ImageData
                 {
-                    ImagePath = Path.GetFullPath($"{_notHotDogTrainImagesPath}\\{file}"),
-                    Label = "nothotdog"
+                    ImagePath = Path.GetFullPath($"{path}\\{file}"),
+                    Label = label
                 };
 
-                trainingData.Add(imageData);
+                images.Add(imageData);
             }
-
-
-
         }
     }
 
