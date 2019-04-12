@@ -22,16 +22,16 @@ namespace MLN_SentimentAnalysis
             var context = new MLContext(seed: 0);
 
             // Load the data
-            var data = context.Data.LoadFromTextFile<SentimentData>(_path, hasHeader: false);
+            var data = context.Data.LoadFromTextFile<Input>(_path, hasHeader: false);
 
             // Split the data into a training set and a test set
-            var trainTestData = context.BinaryClassification.TrainTestSplit(data, testFraction: 0.2, seed: 0);
+            var trainTestData = context.Data.TrainTestSplit(data, testFraction: 0.2, seed: 0);
             var trainData = trainTestData.TrainSet;
             var testData = trainTestData.TestSet;
 
             // Build and train the model
             var pipeline = context.Transforms.Text.FeaturizeText(outputColumnName: "Features", inputColumnName: "SentimentText")
-                .Append(context.BinaryClassification.Trainers.FastTree(numLeaves: 50, numTrees: 50, minDatapointsInLeaves: 20));
+                .Append(context.BinaryClassification.Trainers.FastTree(numberOfLeaves: 50, numberOfTrees: 50, minimumExampleCountPerLeaf: 20));
 
             Console.WriteLine("Training the model...");
             var model = pipeline.Fit(trainData);
@@ -42,15 +42,15 @@ namespace MLN_SentimentAnalysis
 
             Console.WriteLine();
             Console.WriteLine($"Accuracy: {metrics.Accuracy:P2}");
-            Console.WriteLine($"AUC: {metrics.Auc:P2}");
+            Console.WriteLine($"AUC: {metrics.AreaUnderPrecisionRecallCurve:P2}");
             Console.WriteLine($"F1: {metrics.F1Score:P2}");
 
             // Use the model to make predictions
-            var predictor = model.CreatePredictionEngine<SentimentData, SentimentPrediction>(context);
+            var predictor = context.Model.CreatePredictionEngine<Input, Output>(model);
 
-            foreach(var sample in _samples)
+            foreach (var sample in _samples)
             {
-                var input = new SentimentData { SentimentText = sample };
+                var input = new Input { SentimentText = sample };
                 var prediction = predictor.Predict(input);
 
                 Console.WriteLine();
@@ -63,7 +63,7 @@ namespace MLN_SentimentAnalysis
         }
     }
 
-    public class SentimentData
+    public class Input
     {
         [LoadColumn(0)]
         public string SentimentText;
@@ -72,7 +72,7 @@ namespace MLN_SentimentAnalysis
         public bool Sentiment;
     }
 
-    public class SentimentPrediction
+    public class Output
     {
         [ColumnName("PredictedLabel")]
         public bool Prediction { get; set; }
