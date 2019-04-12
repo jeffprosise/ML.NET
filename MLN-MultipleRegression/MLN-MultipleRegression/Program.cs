@@ -30,7 +30,7 @@ namespace MLN_MultipleRegression
 
             // Evaluate the model
             var predictions = model.Transform(testData);
-            var metrics = context.Regression.Evaluate(predictions, "Label", "Score");
+            var metrics = context.Regression.Evaluate(predictions);
             Console.WriteLine($"R2 score: {metrics.RSquared:0.##}");
 
             // Evaluate the model again using cross-validation

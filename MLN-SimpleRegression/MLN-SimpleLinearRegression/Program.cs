@@ -22,7 +22,7 @@ namespace MLN_SimpleLinearRegression
 
             // Compute the model's R2 score
             var predictions = model.Transform(data);
-            var metrics = context.Regression.Evaluate(predictions, "Label", "Score");
+            var metrics = context.Regression.Evaluate(predictions);
             Console.WriteLine($"R2 score: {metrics.RSquared:0.##}");
 
             // Use the model to make a prediction
