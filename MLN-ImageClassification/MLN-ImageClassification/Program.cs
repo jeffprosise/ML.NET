@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.ML;
+﻿using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.ImageAnalytics;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace MLN_ImageClassification
 {
@@ -29,8 +25,8 @@ namespace MLN_ImageClassification
 
             // Load the training data
             var trainingData = new List<ImageData>();
-            LoadImageData(trainingData, _hotDogTrainImagesPath, true);
-            LoadImageData(trainingData, _notHotDogTrainImagesPath, false);
+            LoadImageData(trainingData, _hotDogTrainImagesPath, "hotdog");
+            LoadImageData(trainingData, _notHotDogTrainImagesPath, "nothotdog");
 
             // Build the model
             var pipeline = context.Transforms.Conversion.MapValueToKey(outputColumnName: _labelToKey, inputColumnName: "Label")
@@ -39,7 +35,8 @@ namespace MLN_ImageClassification
                 .Append(context.Transforms.ResizeImages(outputColumnName: _imageReal, imageWidth: InceptionSettings.ImageWidth, imageHeight: InceptionSettings.ImageHeight, inputColumnName: _imageReal))
                 .Append(context.Transforms.ExtractPixels(new ImagePixelExtractingEstimator.ColumnOptions(name: "input", inputColumnName: _imageReal, interleave: InceptionSettings.ChannelsLast, offset: InceptionSettings.Mean)))
                 .Append(context.Transforms.ScoreTensorFlowModel(modelLocation: Path.GetFullPath(_modelPath), outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }))
-                .Append(context.BinaryClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
+                //.Append(context.BinaryClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
+                .Append(context.MulticlassClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
                 .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabelValue", DefaultColumnNames.PredictedLabel))));
 
             // Train the model
@@ -59,7 +56,7 @@ namespace MLN_ImageClassification
 
         }
 
-        private static void LoadImageData(List<ImageData> images, string path, bool isHotDog)
+        private static void LoadImageData(List<ImageData> images, string path, string label)
         {
             var files = Directory.EnumerateFiles(path);
 
@@ -68,7 +65,7 @@ namespace MLN_ImageClassification
                 var imageData = new ImageData
                 {
                     ImagePath = Path.GetFullPath($"{path}\\{file}"),
-                    IsHotDog = isHotDog
+                    Label = label
                 };
 
                 images.Add(imageData);
@@ -79,24 +76,22 @@ namespace MLN_ImageClassification
     public class ImageData
     {
         public string ImagePath;
-
-        [ColumnName("Label")]
-        public bool IsHotDog;
-    }
-
-    public class ImagePrediction
-    {
-        [ColumnName("PredictedLabel")]
-        public bool Prediction { get; set; }
-
-        public float Probability { get; set; }
+        public string Label;
     }
 
     //public class ImagePrediction
     //{
-    //    public float[] Score;
-    //    public string PredictedLabelValue;
+    //    [ColumnName("PredictedLabel")]
+    //    public bool Prediction { get; set; }
+
+    //    public float Probability { get; set; }
     //}
+
+    public class ImagePrediction
+    {
+        public float[] Score;
+        public string PredictedLabelValue;
+    }
 
     public struct InceptionSettings
     {
