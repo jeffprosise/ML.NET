@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,10 +15,10 @@ namespace MLN_ImageClassification
     {
         private static readonly string _hotDogTrainImagesPath = "..\\..\\..\\Data\\train\\hot-dog";
         private static readonly string _notHotDogTrainImagesPath = "..\\..\\..\\Data\\train\\not-hot-dog";
-        private static readonly string _hotDogTestImagesPath = "..\\..\\..\\Data\\test\\hot-dog";
-        private static readonly string _notHotDogTestImagesPath = "..\\..\\..\\Data\\test\\not-hot-dog";
-        private static readonly string _hotDogImagePath = "..\\..\\..\\Data\\predict\\1007.jpg";
-        private static readonly string _sushiImagePath = "..\\..\\..\\Data\\predict\\1008.jpg";
+        //private static readonly string _hotDogTestImagesPath = "..\\..\\..\\Data\\test\\hot-dog";
+        //private static readonly string _notHotDogTestImagesPath = "..\\..\\..\\Data\\test\\not-hot-dog";
+        //private static readonly string _hotDogImagePath = "..\\..\\..\\Data\\predict\\1007.jpg";
+        //private static readonly string _sushiImagePath = "..\\..\\..\\Data\\predict\\1008.jpg";
         private static readonly string _modelPath = "..\\..\\..\\Model\\tensorflow_inception_graph.pb";
         private static readonly string _labelToKey = "labelTokey";
         private static readonly string _imageReal = "ImageReal";
@@ -28,29 +29,34 @@ namespace MLN_ImageClassification
 
             // Load the training data
             var trainingData = new List<ImageData>();
-            LoadImageData(trainingData, _hotDogTrainImagesPath, "hotdog");
-            LoadImageData(trainingData, _notHotDogTrainImagesPath, "nothotdog");
+            LoadImageData(trainingData, _hotDogTrainImagesPath, true);
+            LoadImageData(trainingData, _notHotDogTrainImagesPath, false);
 
             // Build the model
-            var estimator = context.Transforms.Conversion.MapValueToKey(outputColumnName: _labelToKey, inputColumnName: "Label")
+            var pipeline = context.Transforms.Conversion.MapValueToKey(outputColumnName: _labelToKey, inputColumnName: "Label")
                 .Append(context.Transforms.LoadImages(Path.GetFullPath(_hotDogTrainImagesPath), (_imageReal, nameof(ImageData.ImagePath)))
                 .Append(context.Transforms.LoadImages(Path.GetFullPath(_notHotDogTrainImagesPath), (_imageReal, nameof(ImageData.ImagePath)))
                 .Append(context.Transforms.ResizeImages(outputColumnName: _imageReal, imageWidth: InceptionSettings.ImageWidth, imageHeight: InceptionSettings.ImageHeight, inputColumnName: _imageReal))
-                .Append(context.Transforms.ExtractPixels(new ImagePixelExtractingEstimator.ColumnOptions
-                (name: "input", inputColumnName: _imageReal, interleave: InceptionSettings.ChannelsLast, offset: InceptionSettings.Mean)))
+                .Append(context.Transforms.ExtractPixels(new ImagePixelExtractingEstimator.ColumnOptions(name: "input", inputColumnName: _imageReal, interleave: InceptionSettings.ChannelsLast, offset: InceptionSettings.Mean)))
                 .Append(context.Transforms.ScoreTensorFlowModel(modelLocation: Path.GetFullPath(_modelPath), outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }))
-                .Append(context.MulticlassClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
+                .Append(context.BinaryClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
                 .Append(context.Transforms.Conversion.MapKeyToValue(("PredictedLabelValue", DefaultColumnNames.PredictedLabel)))));
 
             // Train the model
+            Console.WriteLine("Training the model...");
+            var data = context.Data.LoadFromEnumerable<ImageData>(trainingData);
+            var model = pipeline.Fit(data);
+            var predictions = model.Transform(data);
 
+            var imageData = context.Data.CreateEnumerable<ImageData>(data, false, true);
+            var imagePredictionData = context.Data.CreateEnumerable<ImagePrediction>(predictions, false, true);
 
 
 
 
         }
 
-        private static void LoadImageData(List<ImageData> images, string path, string label)
+        private static void LoadImageData(List<ImageData> images, string path, bool isHotDog)
         {
             var files = Directory.EnumerateFiles(path);
 
@@ -59,7 +65,7 @@ namespace MLN_ImageClassification
                 var imageData = new ImageData
                 {
                     ImagePath = Path.GetFullPath($"{path}\\{file}"),
-                    Label = label
+                    IsHotDog = isHotDog
                 };
 
                 images.Add(imageData);
@@ -69,11 +75,9 @@ namespace MLN_ImageClassification
 
     public class ImageData
     {
-        [LoadColumn(0)]
+        [ColumnName("Label")]
+        public bool IsHotDog;
         public string ImagePath;
-
-        [LoadColumn(1)]
-        public string Label;
     }
 
     public class ImagePrediction
