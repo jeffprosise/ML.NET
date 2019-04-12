@@ -30,14 +30,14 @@ namespace MLN_ImageClassification
 
             // Build the model
             var pipeline = context.Transforms.Conversion.MapValueToKey(outputColumnName: _labelToKey, inputColumnName: "Label")
-                .Append(context.Transforms.LoadImages(Path.GetFullPath(_hotDogTrainImagesPath), (_imageReal, nameof(ImageData.ImagePath)))
-                .Append(context.Transforms.LoadImages(Path.GetFullPath(_notHotDogTrainImagesPath), (_imageReal, nameof(ImageData.ImagePath)))
+                .Append(context.Transforms.LoadImages(_hotDogTrainImagesPath, (_imageReal, nameof(ImageData.ImagePath)))
+                .Append(context.Transforms.LoadImages(_notHotDogTrainImagesPath, (_imageReal, nameof(ImageData.ImagePath)))
                 .Append(context.Transforms.ResizeImages(outputColumnName: _imageReal, imageWidth: InceptionSettings.ImageWidth, imageHeight: InceptionSettings.ImageHeight, inputColumnName: _imageReal))
                 .Append(context.Transforms.ExtractPixels(new ImagePixelExtractingEstimator.ColumnOptions(name: "input", inputColumnName: _imageReal, interleave: InceptionSettings.ChannelsLast, offset: InceptionSettings.Mean)))
-                .Append(context.Transforms.ScoreTensorFlowModel(modelLocation: Path.GetFullPath(_modelPath), outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }))
+                .Append(context.Transforms.ScoreTensorFlowModel(modelLocation: _modelPath, outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }))
                 //.Append(context.BinaryClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
                 .Append(context.MulticlassClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
-                .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabelValue", DefaultColumnNames.PredictedLabel))));
+                .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabelValue", "PredictedLabel"))));
 
             // Train the model
             Console.WriteLine("Training the model...");

@@ -15,8 +15,7 @@ namespace MLN_SimpleLinearRegression
             // Train the model
             var data = context.Data.LoadFromTextFile<Input>(_path, hasHeader: true, separatorChar: ',');
 
-            var pipeline = context.Transforms.CopyColumns(outputColumnName: "Label", inputColumnName: "BirthRate")
-                .Append(context.Transforms.Concatenate("Features", "PovertyRate"))
+            var pipeline = context.Transforms.Concatenate("Features", "PovertyRate")
                 .Append(context.Regression.Trainers.OnlineGradientDescent(learningRate: 0.01f, numIterations: 1000));
 
             var model = pipeline.Fit(data);
@@ -33,6 +32,7 @@ namespace MLN_SimpleLinearRegression
 
             Console.WriteLine($"Predicted birth rate: {prediction.BirthRate:0.##}");
             Console.WriteLine($"Actual birth rate: 58.10");
+            Console.WriteLine();
         }
     }
 
@@ -41,7 +41,7 @@ namespace MLN_SimpleLinearRegression
         [LoadColumn(1)]
         public float PovertyRate;
 
-        [LoadColumn(5)]
+        [LoadColumn(5), ColumnName("Label")]
         public float BirthRate;
     }
 
