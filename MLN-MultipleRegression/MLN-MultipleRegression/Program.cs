@@ -17,7 +17,7 @@ namespace MLN_MultipleRegression
             var data = context.Data.LoadFromTextFile<Input>(_path, hasHeader: true, separatorChar: ',');
 
             // Split the data into a training set and a test set
-            var trainTestData = context.Regression.TrainTestSplit(data, testFraction: 0.2, seed: 0);
+            var trainTestData = context.Data.TrainTestSplit(data, testFraction: 0.2, seed: 0);
             var trainData = trainTestData.TrainSet;
             var testData = trainTestData.TestSet;
 
@@ -34,12 +34,12 @@ namespace MLN_MultipleRegression
             Console.WriteLine($"R2 score: {metrics.RSquared:0.##}");
 
             // Evaluate the model again using cross-validation
-            var scores = context.Regression.CrossValidate(data, pipeline, numFolds: 5);
+            var scores = context.Regression.CrossValidate(data, pipeline, numberOfFolds: 5);
             var mean = scores.Average(x => x.Metrics.RSquared);
             Console.WriteLine($"Mean cross-validated R2 score: {mean:0.##}");
 
             // Use the model to make a prediction
-            var predictor = model.CreatePredictionEngine<Input, Output>(context);
+            var predictor = context.Model.CreatePredictionEngine<Input, Output>(model);
 
             var input = new Input
             {

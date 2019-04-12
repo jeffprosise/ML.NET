@@ -16,7 +16,7 @@ namespace MLN_SimpleLinearRegression
             var data = context.Data.LoadFromTextFile<Input>(_path, hasHeader: true, separatorChar: ',');
 
             var pipeline = context.Transforms.Concatenate("Features", "PovertyRate")
-                .Append(context.Regression.Trainers.OnlineGradientDescent(learningRate: 0.01f, numIterations: 1000));
+                .Append(context.Regression.Trainers.OnlineGradientDescent(learningRate: 0.01f, numberOfIterations: 1000));
 
             var model = pipeline.Fit(data);
 
@@ -26,7 +26,7 @@ namespace MLN_SimpleLinearRegression
             Console.WriteLine($"R2 score: {metrics.RSquared:0.##}");
 
             // Use the model to make a prediction
-            var predictor = model.CreatePredictionEngine<Input, Output>(context);
+            var predictor = context.Model.CreatePredictionEngine<Input, Output>(model);
             var input = new Input { PovertyRate = 19.7f };
             var prediction = predictor.Predict(input);
 
