@@ -14,7 +14,7 @@ namespace MLN_MultipleRegression
             var context = new MLContext(seed: 0);
 
             // Load the data
-            var data = context.Data.LoadFromTextFile<HousingInput>(_path, hasHeader: true, separatorChar: ',');
+            var data = context.Data.LoadFromTextFile<Input>(_path, hasHeader: true, separatorChar: ',');
 
             // Split the data into a training set and a test set
             var trainTestData = context.Regression.TrainTestSplit(data, testFraction: 0.2, seed: 0);
@@ -22,8 +22,7 @@ namespace MLN_MultipleRegression
             var testData = trainTestData.TestSet;
 
             // One-hot encode the values in the "UseCode" column and train the model
-            var pipeline = context.Transforms.CopyColumns(outputColumnName: "Label", inputColumnName: "LastSoldPrice")
-                .Append(context.Transforms.Categorical.OneHotEncoding(outputColumnName: "UseCodeEncoded", inputColumnName: "UseCode"))
+            var pipeline = context.Transforms.Categorical.OneHotEncoding(outputColumnName: "UseCodeEncoded", inputColumnName: "UseCode")
                 .Append(context.Transforms.Concatenate("Features", "UseCodeEncoded", "Bathrooms", "Bedrooms", "TotalRooms", "FinishedSquareFeet"))
                 .Append(context.Regression.Trainers.FastForest());
 
@@ -37,12 +36,12 @@ namespace MLN_MultipleRegression
             // Evaluate the model again using cross-validation
             var scores = context.Regression.CrossValidate(data, pipeline, numFolds: 5);
             var mean = scores.Average(x => x.Metrics.RSquared);
-            Console.WriteLine($"Mean R2 score: {mean:0.##}");
+            Console.WriteLine($"Mean cross-validated R2 score: {mean:0.##}");
 
             // Use the model to make a prediction
-            var predictor = model.CreatePredictionEngine<HousingInput, HousingOutput>(context);
+            var predictor = model.CreatePredictionEngine<Input, Output>(context);
 
-            var input = new HousingInput
+            var input = new Input
             {
                 Bathrooms = 1.0f,
                 Bedrooms = 1.0f,
@@ -55,10 +54,11 @@ namespace MLN_MultipleRegression
             var prediction = predictor.Predict(input);
 
             Console.WriteLine($"Predicted price: ${prediction.Price:n0}; Actual price: $665,000");
+            Console.WriteLine();
         }
     }
 
-    public class HousingInput
+    public class Input
     {
         [LoadColumn(1)]
         public float Bathrooms;
@@ -69,7 +69,7 @@ namespace MLN_MultipleRegression
         [LoadColumn(3)]
         public float FinishedSquareFeet;
 
-        [LoadColumn(5)]
+        [LoadColumn(5), ColumnName("Label")]
         public float LastSoldPrice;
 
         [LoadColumn(9)]
@@ -79,7 +79,7 @@ namespace MLN_MultipleRegression
         public string UseCode;
     }
 
-    public class HousingOutput
+    public class Output
     {
         [ColumnName("Score")]
         public float Price;
