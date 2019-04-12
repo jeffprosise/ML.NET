@@ -22,7 +22,7 @@ namespace MLN_MultipleRegression
             var testData = trainTestData.TestSet;
 
             // One-hot encode the values in the "UseCode" column and train the model
-            var pipeline = context.Transforms.Categorical.OneHotEncoding(outputColumnName: "UseCodeEncoded", inputColumnName: "UseCode")
+            var pipeline = context.Transforms.Categorical.OneHotEncoding(inputColumnName: "UseCode", outputColumnName: "UseCodeEncoded")
                 .Append(context.Transforms.Concatenate("Features", "UseCodeEncoded", "Bathrooms", "Bedrooms", "TotalRooms", "FinishedSquareFeet"))
                 .Append(context.Regression.Trainers.FastForest());
 
