@@ -40,7 +40,7 @@ namespace MLN_ImageClassification
                 .Append(context.Transforms.ExtractPixels(new ImagePixelExtractingEstimator.ColumnOptions(name: "input", inputColumnName: _imageReal, interleave: InceptionSettings.ChannelsLast, offset: InceptionSettings.Mean)))
                 .Append(context.Transforms.ScoreTensorFlowModel(modelLocation: Path.GetFullPath(_modelPath), outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }))
                 .Append(context.BinaryClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
-                .Append(context.Transforms.Conversion.MapKeyToValue(("PredictedLabelValue", DefaultColumnNames.PredictedLabel)))));
+                .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabelValue", DefaultColumnNames.PredictedLabel))));
 
             // Train the model
             Console.WriteLine("Training the model...");
@@ -51,7 +51,10 @@ namespace MLN_ImageClassification
             var imageData = context.Data.CreateEnumerable<ImageData>(data, false, true);
             var imagePredictionData = context.Data.CreateEnumerable<ImagePrediction>(predictions, false, true);
 
+            // TODO: Evaluate the model
 
+
+            // TODO: Save the model
 
 
         }
@@ -75,15 +78,17 @@ namespace MLN_ImageClassification
 
     public class ImageData
     {
+        public string ImagePath;
+
         [ColumnName("Label")]
         public bool IsHotDog;
-        public string ImagePath;
     }
 
     public class ImagePrediction
     {
         [ColumnName("PredictedLabel")]
         public bool Prediction { get; set; }
+
         public float Probability { get; set; }
     }
 
