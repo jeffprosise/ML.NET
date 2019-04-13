@@ -10,12 +10,9 @@ namespace MLN_ImageClassification
     {
         private static readonly string _hotDogTrainImagesPath = "..\\..\\..\\Data\\train\\hot-dog";
         private static readonly string _notHotDogTrainImagesPath = "..\\..\\..\\Data\\train\\not-hot-dog";
-        //private static readonly string _hotDogTestImagesPath = "..\\..\\..\\Data\\test\\hot-dog";
-        //private static readonly string _notHotDogTestImagesPath = "..\\..\\..\\Data\\test\\not-hot-dog";
-        private static readonly string _hotDogImagePath = "..\\..\\..\\Data\\predict\\hotdog.jpg";
-        private static readonly string _sushiImagePath = "..\\..\\..\\Data\\predict\\sushi.jpg";
+        private static readonly string _testImagesPath = "..\\..\\..\\Data\\test";
         private static readonly string _modelPath = "..\\..\\..\\Model\\tensorflow_inception_graph.pb";
-        private static readonly string _savePath = "..\\..\\..\\Model\\hotdog.zip";
+        //private static readonly string _savePath = "..\\..\\..\\Model\\hotdog.zip";
 
         static void Main(string[] args)
         {
@@ -23,17 +20,17 @@ namespace MLN_ImageClassification
 
             // Load the training data
             var trainingData = new List<ImageData>();
-            LoadImageData(trainingData, _hotDogTrainImagesPath, "hotdog");
-            LoadImageData(trainingData, _notHotDogTrainImagesPath, "nothotdog");
+            LoadImageData(trainingData, Path.GetFullPath(_hotDogTrainImagesPath), "hotdog");
+            LoadImageData(trainingData, Path.GetFullPath(_notHotDogTrainImagesPath), "nothotdog");
 
-            var pipeline = context.Transforms.Conversion.MapValueToKey(outputColumnName: "labelTokey", inputColumnName: "Label")
-                .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: _hotDogTrainImagesPath, inputColumnName: "ImagePath"))
-                .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: _notHotDogTrainImagesPath, inputColumnName: "ImagePath"))
+            var pipeline = context.Transforms.Conversion.MapValueToKey(outputColumnName: "LabelTokey", inputColumnName: "Label")
+                .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_hotDogTrainImagesPath), inputColumnName: "ImagePath"))
+                .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_notHotDogTrainImagesPath), inputColumnName: "ImagePath"))
                 .Append(context.Transforms.ResizeImages(outputColumnName: "input", inputColumnName: "input", imageWidth: InceptionSettings.ImageWidth, imageHeight: InceptionSettings.ImageHeight))
                 .Append(context.Transforms.ExtractPixels(outputColumnName: "input", interleavePixelColors: InceptionSettings.ChannelsLast, offsetImage: InceptionSettings.Mean))
                 .Append(context.Model.LoadTensorFlowModel(_modelPath)
                     .ScoreTensorFlowModel(outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }, addBatchDimensionInput: true)
-                .Append(context.MulticlassClassification.Trainers.LbfgsMaximumEntropy(labelColumnName: "labelTokey", featureColumnName: "softmax2_pre_activation"))
+                .Append(context.MulticlassClassification.Trainers.LbfgsMaximumEntropy(labelColumnName: "LabelTokey", featureColumnName: "softmax2_pre_activation"))
                 .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabelValue", "PredictedLabel")));
 
             // Train the model
@@ -46,21 +43,22 @@ namespace MLN_ImageClassification
             //var imageData = context.Data.CreateEnumerable<ImageData>(data, false, true);
             //var imagePredictionData = context.Data.CreateEnumerable<ImagePrediction>(predictions, false, true);
 
-            // Make a pair of predictions
+            // Make predictions using test images
             var predictor = context.Model.CreatePredictionEngine<ImageData, ImagePrediction>(model);
 
-            var hotdog = new ImageData { ImagePath = _hotDogImagePath };
-            var result = predictor.Predict(hotdog);
-            Console.WriteLine(result.PredictedLabelValue == "hotdog" ? "It's a hot dog!" : "Not a hot dog");
+            var files = Directory.EnumerateFiles(Path.GetFullPath(_testImagesPath));
 
-            var sushi = new ImageData { ImagePath = _sushiImagePath };
-            result = predictor.Predict(sushi);
-            Console.WriteLine(result.PredictedLabelValue == "hotdog" ? "It's a hot dog!" : "Not a hot dog");
+            foreach (var file in files)
+            {
+                var image = new ImageData { ImagePath = file };
+                var result = predictor.Predict(image);
+                Console.WriteLine($"{Path.GetFileName(file)} - {result.PredictedLabelValue}");
+            }
 
             // Save the model
             Console.WriteLine();
             Console.WriteLine("Saving the model");
-            context.Model.Save(model, data.Schema, _savePath);
+            //context.Model.Save(model, data.Schema, _savePath);
         }
 
         private static void LoadImageData(List<ImageData> images, string path, string label)
@@ -71,7 +69,7 @@ namespace MLN_ImageClassification
             {
                 var imageData = new ImageData
                 {
-                    ImagePath = Path.GetFullPath($"{path}\\{file}"),
+                    ImagePath = file,
                     Label = label
                 };
 
