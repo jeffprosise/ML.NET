@@ -1,8 +1,8 @@
 ﻿using Microsoft.ML;
-using Microsoft.ML.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace MLN_ImageClassification
 {
@@ -44,19 +44,20 @@ namespace MLN_ImageClassification
 
             // Make predictions using test images
             var predictor = context.Model.CreatePredictionEngine<ImageData, ImagePrediction>(model);
-
             var files = Directory.EnumerateFiles(Path.GetFullPath(_testImagesPath));
 
             foreach (var file in files)
             {
                 var image = new ImageData { ImagePath = file };
                 var result = predictor.Predict(image);
-                Console.WriteLine($"{Path.GetFileName(file)} - {result.PredictedLabelValue}");
+                var label = result.PredictedLabelValue;
+                var probability = result.Score.Max();
+                Console.WriteLine($"{Path.GetFileName(file)} - {label} ({probability:P2})");
             }
 
             // Save the model
             Console.WriteLine();
-            Console.WriteLine("Saving the model");
+            //Console.WriteLine("Saving the model");
             //context.Model.Save(model, data.Schema, _savePath);
         }
 
