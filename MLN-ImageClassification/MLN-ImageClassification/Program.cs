@@ -9,7 +9,8 @@ namespace MLN_ImageClassification
     class Program
     {
         private static readonly string _hotDogTrainImagesPath = "..\\..\\..\\Data\\train\\hot-dog";
-        private static readonly string _notHotDogTrainImagesPath = "..\\..\\..\\Data\\train\\not-hot-dog";
+        private static readonly string _pizzaTrainImagesPath = "..\\..\\..\\Data\\train\\pizza";
+        private static readonly string _sushiTrainImagesPath = "..\\..\\..\\Data\\train\\sushi";
         private static readonly string _testImagesPath = "..\\..\\..\\Data\\test";
         private static readonly string _modelPath = "..\\..\\..\\Model\\tensorflow_inception_graph.pb";
         //private static readonly string _savePath = "..\\..\\..\\Model\\hotdog.zip";
@@ -21,11 +22,13 @@ namespace MLN_ImageClassification
             // Load the training data
             var trainingData = new List<ImageData>();
             LoadImageData(trainingData, Path.GetFullPath(_hotDogTrainImagesPath), "hotdog");
-            LoadImageData(trainingData, Path.GetFullPath(_notHotDogTrainImagesPath), "nothotdog");
+            LoadImageData(trainingData, Path.GetFullPath(_pizzaTrainImagesPath), "pizza");
+            LoadImageData(trainingData, Path.GetFullPath(_sushiTrainImagesPath), "sushi");
 
             var pipeline = context.Transforms.Conversion.MapValueToKey(outputColumnName: "LabelTokey", inputColumnName: "Label")
                 .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_hotDogTrainImagesPath), inputColumnName: "ImagePath"))
-                .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_notHotDogTrainImagesPath), inputColumnName: "ImagePath"))
+                .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_pizzaTrainImagesPath), inputColumnName: "ImagePath"))
+                .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_sushiTrainImagesPath), inputColumnName: "ImagePath"))
                 .Append(context.Transforms.ResizeImages(outputColumnName: "input", inputColumnName: "input", imageWidth: InceptionSettings.ImageWidth, imageHeight: InceptionSettings.ImageHeight))
                 .Append(context.Transforms.ExtractPixels(outputColumnName: "input", interleavePixelColors: InceptionSettings.ChannelsLast, offsetImage: InceptionSettings.Mean))
                 .Append(context.Model.LoadTensorFlowModel(_modelPath)
@@ -38,10 +41,6 @@ namespace MLN_ImageClassification
             var data = context.Data.LoadFromEnumerable<ImageData>(trainingData); // Create IDataView from IEnumerable
             var model = pipeline.Fit(data);
             Console.WriteLine();
-
-            //var predictions = model.Transform(data);
-            //var imageData = context.Data.CreateEnumerable<ImageData>(data, false, true);
-            //var imagePredictionData = context.Data.CreateEnumerable<ImagePrediction>(predictions, false, true);
 
             // Make predictions using test images
             var predictor = context.Model.CreatePredictionEngine<ImageData, ImagePrediction>(model);
