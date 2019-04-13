@@ -1,6 +1,4 @@
 ﻿using Microsoft.ML;
-using Microsoft.ML.Data;
-using Microsoft.ML.Transforms.Image;
 using System;
 using System.Collections.Generic;
 using System.IO;
