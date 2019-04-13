@@ -146,8 +146,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Data\predict\1007.jpg" />
-    <Content Include="Data\predict\1008.jpg" />
+    <Content Include="Data\predict\hotdog.jpg" />
+    <Content Include="Data\predict\sushi.jpg" />
+    <Content Include="Data\predict\pizza.png" />
     <Content Include="Data\test\hot-dog\1000288.jpg" />
     <Content Include="Data\test\hot-dog\1011661.jpg" />
     <Content Include="Data\test\hot-dog\1013916.jpg" />

@@ -12,8 +12,8 @@ namespace MLN_ImageClassification
         private static readonly string _notHotDogTrainImagesPath = "..\\..\\..\\Data\\train\\not-hot-dog";
         //private static readonly string _hotDogTestImagesPath = "..\\..\\..\\Data\\test\\hot-dog";
         //private static readonly string _notHotDogTestImagesPath = "..\\..\\..\\Data\\test\\not-hot-dog";
-        private static readonly string _hotDogImagePath = "..\\..\\..\\Data\\predict\\1007.jpg";
-        private static readonly string _sushiImagePath = "..\\..\\..\\Data\\predict\\1008.jpg";
+        private static readonly string _hotDogImagePath = "..\\..\\..\\Data\\predict\\hotdog.jpg";
+        private static readonly string _sushiImagePath = "..\\..\\..\\Data\\predict\\sushi.jpg";
         private static readonly string _modelPath = "..\\..\\..\\Model\\tensorflow_inception_graph.pb";
         private static readonly string _savePath = "..\\..\\..\\Model\\hotdog.zip";
 
