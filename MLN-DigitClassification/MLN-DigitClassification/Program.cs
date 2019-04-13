@@ -25,7 +25,7 @@ namespace MLN_DigitClassification
                 columns: new[]
                 {
                     new TextLoader.Column("PixelValues", DataKind.Single, 0, 63),
-                    new TextLoader.Column("Label", DataKind.Single, 64)
+                    new TextLoader.Column("Number", DataKind.Single, 64)
                 }
             );
 
@@ -36,30 +36,39 @@ namespace MLN_DigitClassification
                 columns: new[]
                 {
                     new TextLoader.Column("PixelValues", DataKind.Single, 0, 63),
-                    new TextLoader.Column("Label", DataKind.Single, 64)
+                    new TextLoader.Column("Number", DataKind.Single, 64)
                 }
             );
 
             // Build and train the model
-            var pipeline = context.Transforms.Concatenate("Features", "PixelValues")
-                .Append(context.MulticlassClassification.Trainers.StochasticDualCoordinateAscent());
-                //.Append(context.MulticlassClassification.Trainers.LogisticRegression());
+            var pipeline = context.Transforms.Conversion.MapValueToKey("Label", "Number")
+                .Append(context.Transforms.Concatenate("Features", nameof(Input.PixelValues)))
+                .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy(labelColumnName: "Label", featureColumnName: "Features"))
+                .Append(context.Transforms.Conversion.MapKeyToValue("Number", "Label"));
+
+            //var pipeline = context.Transforms.Concatenate("Features", nameof(Input.PixelValues))
+            //    .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy(labelColumnName: "Number", featureColumnName: "Features"));
+
+            //var trainer = context.MulticlassClassification.Trainers.SdcaMaximumEntropy(labelColumnName: "Label", featureColumnName: "Features");
+            //var pipeline = dataProcessPipeline.Append(trainer).Append(context.Transforms.Conversion.MapKeyToValue("Number", "Label"));
+
+            //var pipeline = context.Transforms.Concatenate("Features", "PixelValues")
+            //    .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy());
 
             Console.WriteLine("Training the model...");
             var model = pipeline.Fit(trainData);
 
             // Evaluate the model
             var predictions = model.Transform(testData);
-            //var metrics = context.MulticlassClassification.Evaluate(predictions, label: "Label", score: "Score");
             var metrics = context.MulticlassClassification.Evaluate(predictions);
 
             Console.WriteLine();
-            Console.WriteLine($"Macro accuracy = {(metrics.AccuracyMacro * 100):0.##}%");
-            Console.WriteLine($"Micro accuracy = {(metrics.AccuracyMicro * 100):0.##}%");
+            Console.WriteLine($"Macro accuracy = {(metrics.MacroAccuracy * 100):0.##}%");
+            Console.WriteLine($"Micro accuracy = {(metrics.MicroAccuracy * 100):0.##}%");
             Console.WriteLine();
 
             // Use the model to make a prediction
-            var predictor = model.CreatePredictionEngine<Input, Output>(context);
+            var predictor = context.Model.CreatePredictionEngine<Input, Output>(model);
 
             var input = new Input
             {
@@ -92,6 +101,8 @@ namespace MLN_DigitClassification
     {
         [VectorType(64)]
         public float[] PixelValues;
+
+        public float Number;
     }
 
     class Output

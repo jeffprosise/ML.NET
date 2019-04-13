@@ -1,6 +1,6 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
-using Microsoft.ML.ImageAnalytics;
+using Microsoft.ML.Transforms.Image;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,11 +13,9 @@ namespace MLN_ImageClassification
         private static readonly string _notHotDogTrainImagesPath = "..\\..\\..\\Data\\train\\not-hot-dog";
         //private static readonly string _hotDogTestImagesPath = "..\\..\\..\\Data\\test\\hot-dog";
         //private static readonly string _notHotDogTestImagesPath = "..\\..\\..\\Data\\test\\not-hot-dog";
-        //private static readonly string _hotDogImagePath = "..\\..\\..\\Data\\predict\\1007.jpg";
-        //private static readonly string _sushiImagePath = "..\\..\\..\\Data\\predict\\1008.jpg";
+        private static readonly string _hotDogImagePath = "..\\..\\..\\Data\\predict\\1007.jpg";
+        private static readonly string _sushiImagePath = "..\\..\\..\\Data\\predict\\1008.jpg";
         private static readonly string _modelPath = "..\\..\\..\\Model\\tensorflow_inception_graph.pb";
-        private static readonly string _labelToKey = "labelTokey";
-        private static readonly string _imageReal = "ImageReal";
 
         static void Main(string[] args)
         {
@@ -28,28 +26,32 @@ namespace MLN_ImageClassification
             LoadImageData(trainingData, _hotDogTrainImagesPath, "hotdog");
             LoadImageData(trainingData, _notHotDogTrainImagesPath, "nothotdog");
 
-            // Build the model
-            var pipeline = context.Transforms.Conversion.MapValueToKey(outputColumnName: _labelToKey, inputColumnName: "Label")
-                .Append(context.Transforms.LoadImages(_hotDogTrainImagesPath, (_imageReal, nameof(ImageData.ImagePath)))
-                .Append(context.Transforms.LoadImages(_notHotDogTrainImagesPath, (_imageReal, nameof(ImageData.ImagePath)))
-                .Append(context.Transforms.ResizeImages(outputColumnName: _imageReal, imageWidth: InceptionSettings.ImageWidth, imageHeight: InceptionSettings.ImageHeight, inputColumnName: _imageReal))
-                .Append(context.Transforms.ExtractPixels(new ImagePixelExtractingEstimator.ColumnOptions(name: "input", inputColumnName: _imageReal, interleave: InceptionSettings.ChannelsLast, offset: InceptionSettings.Mean)))
-                .Append(context.Transforms.ScoreTensorFlowModel(modelLocation: _modelPath, outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }))
-                //.Append(context.BinaryClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
-                .Append(context.MulticlassClassification.Trainers.LogisticRegression(labelColumnName: _labelToKey, featureColumnName: "softmax2_pre_activation"))
-                .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabelValue", "PredictedLabel"))));
+            var pipeline = context.Transforms.LoadImages(imageFolder: _hotDogTrainImagesPath, inputColumnName: "ImagePath", outputColumnName: "input")
+                .Append(context.Transforms.LoadImages(imageFolder: _notHotDogTrainImagesPath, inputColumnName: "ImagePath", outputColumnName: "input"))
+                .Append(context.Transforms.ResizeImages(inputColumnName: "input", outputColumnName: "input", imageWidth: InceptionSettings.ImageWidth, imageHeight: InceptionSettings.ImageHeight))
+                .Append(context.Transforms.ExtractPixels(outputColumnName: "input", interleavePixelColors: InceptionSettings.ChannelsLast, offsetImage: InceptionSettings.Mean))
+                .Append(context.Model.LoadTensorFlowModel(_modelPath)
+                .ScoreTensorFlowModel(inputColumnNames: new[] { "input" }, outputColumnNames: new[] { "softmax2" }, addBatchDimensionInput: true));
+                //.Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy(labelColumnName: "input", featureColumnName: "softmax2"))
+                //.Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabelValue", "PredictedLabel"));
 
             // Train the model
             Console.WriteLine("Training the model...");
             var data = context.Data.LoadFromEnumerable<ImageData>(trainingData);
             var model = pipeline.Fit(data);
-            var predictions = model.Transform(data);
 
-            var imageData = context.Data.CreateEnumerable<ImageData>(data, false, true);
-            var imagePredictionData = context.Data.CreateEnumerable<ImagePrediction>(predictions, false, true);
+            //var predictions = model.Transform(data);
+            //var imageData = context.Data.CreateEnumerable<ImageData>(data, false, true);
+            //var imagePredictionData = context.Data.CreateEnumerable<ImagePrediction>(predictions, false, true);
 
-            // TODO: Evaluate the model
+            // Make a pair of predictions
+            var predictor = context.Model.CreatePredictionEngine<ImageData, ImagePrediction>(model);
 
+            var hotdog = new ImageData { ImagePath = _hotDogImagePath };
+            var result = predictor.Predict(hotdog);
+
+            var sushi = new ImageData { ImagePath = _sushiImagePath };
+            result = predictor.Predict(hotdog);
 
             // TODO: Save the model
 
