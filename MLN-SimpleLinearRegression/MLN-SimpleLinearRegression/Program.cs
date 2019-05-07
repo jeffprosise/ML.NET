@@ -2,7 +2,7 @@
 using Microsoft.ML.Data;
 using System;
 
-namespace MLN_SimpleLinearRegression
+namespace SimpleLinearRegression
 {
     class Program
     {

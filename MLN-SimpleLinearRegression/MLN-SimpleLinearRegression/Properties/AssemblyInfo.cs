@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MLN-LinearRegression")]
+[assembly: AssemblyTitle("MLN-SimpleLinearRegression")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MLN-LinearRegression")]
+[assembly: AssemblyProduct("MLN-SimpleLinearRegression")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a7b14561-6e04-4db3-8a00-ac53badfab43")]
+[assembly: Guid("a4cce83f-4749-40cc-86ed-4604d8be1e80")]
 
 // Version information for an assembly consists of the following four values:
 //
