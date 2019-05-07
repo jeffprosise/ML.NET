@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.ML.Transforms.ValueToKeyMappingEstimator;
 
 namespace MLN_DigitClassification
 {
@@ -41,7 +42,7 @@ namespace MLN_DigitClassification
             );
 
             // Build and train the model
-            var pipeline = context.Transforms.Conversion.MapValueToKey("Label", "Number")
+            var pipeline = context.Transforms.Conversion.MapValueToKey("Label", "Number", keyOrdinality: KeyOrdinality.ByValue)
                 .Append(context.Transforms.Concatenate("Features", nameof(Input.PixelValues)))
                 .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy(labelColumnName: "Label", featureColumnName: "Features"))
                 .Append(context.Transforms.Conversion.MapKeyToValue("Number", "Label"));
@@ -93,6 +94,9 @@ namespace MLN_DigitClassification
                 Console.WriteLine($"{i++} - {score:N8}");
             }
 
+            Console.WriteLine();
+            int index = prediction.Score.ToList().IndexOf(prediction.Score.Max());
+            Console.WriteLine($"Looks like a {index}");
             Console.WriteLine();
         }
     }
