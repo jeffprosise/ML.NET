@@ -25,8 +25,7 @@ namespace MLN_AutoML
             var settings = new RegressionExperimentSettings
             {
                 MaxExperimentTimeInSeconds = 600, // 10 minutes max
-                OptimizingMetric = RegressionMetric.MeanSquaredError,
-                //CancellationToken = cts.Token,
+                OptimizingMetric = RegressionMetric.RSquared,
                 CacheDirectory = null
             };
 
