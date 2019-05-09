@@ -66,6 +66,11 @@ namespace MLN_DigitClassification
             Console.WriteLine();
             Console.WriteLine($"Macro accuracy = {(metrics.MacroAccuracy * 100):0.##}%");
             Console.WriteLine($"Micro accuracy = {(metrics.MicroAccuracy * 100):0.##}%");
+
+            // Evaluate the model using cross-validation
+            var scores = context.MulticlassClassification.CrossValidate(trainData, pipeline, numberOfFolds: 5);
+            var mean = scores.Average(x => x.Metrics.MacroAccuracy);
+            Console.WriteLine($"Mean cross-validated macro accuracy: {mean:P2}");
             Console.WriteLine();
 
             // Use the model to make a prediction

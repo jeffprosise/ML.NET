@@ -1,6 +1,7 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
 using System;
+using System.Linq;
 
 namespace MLN_SpamDetection
 {
@@ -42,6 +43,7 @@ namespace MLN_SpamDetection
             Console.WriteLine($"Accuracy: {metrics.Accuracy:P2}");
             Console.WriteLine($"AUC: {metrics.AreaUnderPrecisionRecallCurve:P2}");
             Console.WriteLine($"F1: {metrics.F1Score:P2}");
+            Console.WriteLine();
 
             // Use the model to make predictions
             var predictor = context.Model.CreatePredictionEngine<Input, Output>(model);

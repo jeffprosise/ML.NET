@@ -1,6 +1,7 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
 using System;
+using System.Linq;
 
 namespace MLN_SentimentAnalysis
 {
@@ -44,6 +45,12 @@ namespace MLN_SentimentAnalysis
             Console.WriteLine($"Accuracy: {metrics.Accuracy:P2}");
             Console.WriteLine($"AUC: {metrics.AreaUnderPrecisionRecallCurve:P2}");
             Console.WriteLine($"F1: {metrics.F1Score:P2}");
+            Console.WriteLine();
+
+            // Evaluate the model using cross-validation
+            var scores = context.BinaryClassification.CrossValidate(data, pipeline, numberOfFolds: 5);
+            var mean = scores.Average(x => x.Metrics.F1Score);
+            Console.WriteLine($"Mean cross-validated F1 score: {mean:P2}");
 
             // Use the model to make predictions
             var predictor = context.Model.CreatePredictionEngine<Input, Output>(model);
