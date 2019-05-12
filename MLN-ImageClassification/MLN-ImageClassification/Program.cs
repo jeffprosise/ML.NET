@@ -13,7 +13,7 @@ namespace MLN_ImageClassification
         private static readonly string _sushiTrainImagesPath = "..\\..\\..\\Data\\train\\sushi";
         private static readonly string _testImagesPath = "..\\..\\..\\Data\\test";
         private static readonly string _modelPath = "..\\..\\..\\Model\\tensorflow_inception_graph.pb";
-        //private static readonly string _savePath = "..\\..\\..\\Model\\hotdog.zip";
+        private static readonly string _savePath = "..\\..\\..\\Model\\hotdog.zip";
 
         static void Main(string[] args)
         {
@@ -57,8 +57,8 @@ namespace MLN_ImageClassification
 
             // Save the model
             Console.WriteLine();
-            //Console.WriteLine("Saving the model");
-            //context.Model.Save(model, data.Schema, _savePath);
+            Console.WriteLine("Saving the model");
+            context.Model.Save(model, data.Schema, _savePath);
         }
 
         private static void LoadImageData(List<ImageData> images, string path, string label)
