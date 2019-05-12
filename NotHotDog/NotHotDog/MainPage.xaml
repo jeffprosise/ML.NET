@@ -1,0 +1,20 @@
+﻿<Page
+    x:Class="NotHotDog.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NotHotDog"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel>
+            <Button Content="Select Image" Width="200" Height="80" Margin="20" HorizontalAlignment="Center" Click="OnSelectImageButtonClicked" />
+            <Grid x:Name="Container">
+                <Image x:Name="LoadedImage" Height="600" />
+            </Grid>
+        </StackPanel>
+        <Rectangle x:Name="Overlay" Fill="Black" Opacity="0.25" Visibility="Collapsed" />
+        <ProgressRing x:Name="Progress" Width="200" Height="200" />
+    </Grid>
+</Page>
