@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -33,16 +34,20 @@ namespace NotHotDog
     public sealed partial class MainPage : Page
     {
         private ITransformer _model;
-        private static readonly string _modelPath = "..\\..\\..\\Model\\hotdog.zip";
+        private static readonly string _modelPath = "ms-appx:///Model/hotdog.zip";
 
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
 
             // Load a trained ML.NET model
-            DataViewSchema schema;
             var context = new MLContext(seed: 0);
-            _model = context.Model.Load("PATH_TO_ZIP_FILE", out schema);
+            _model = context.Model.Load(await GetFilePathAsync(_modelPath), out DataViewSchema schema);
         }
 
         private async void OnSelectImageButtonClicked(object sender, RoutedEventArgs e)
@@ -111,12 +116,18 @@ namespace NotHotDog
                 }
                 finally
                 {
-                    // TODO: Delete the storage file
-
                     //Progress.IsActive = false;
                     //Overlay.Visibility = Visibility.Collapsed;
                 }
             }
+        }
+
+        private static async Task<string> GetFilePathAsync(string path)
+        {
+            var originalFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(path));
+            var storageFolder = ApplicationData.Current.TemporaryFolder;
+            var localFile = await originalFile.CopyAsync(storageFolder, originalFile.Name, NameCollisionOption.ReplaceExisting);
+            return localFile.Path;
         }
     }
 
