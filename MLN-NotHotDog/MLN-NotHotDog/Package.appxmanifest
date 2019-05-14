@@ -7,14 +7,14 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="b41aa8ef-a4c0-4eab-a20e-e41e1c88323c"
+    Name="b0740f0e-09e6-4d3d-8fcc-27d29e8d0930"
     Publisher="CN=Jeff"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="b41aa8ef-a4c0-4eab-a20e-e41e1c88323c" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="b0740f0e-09e6-4d3d-8fcc-27d29e8d0930" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>NotHotDog</DisplayName>
+    <DisplayName>MLN-NotHotDog</DisplayName>
     <PublisherDisplayName>Jeff</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -30,12 +30,12 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="NotHotDog.App">
+      EntryPoint="MLN_NotHotDog.App">
       <uap:VisualElements
-        DisplayName="NotHotDog"
+        DisplayName="MLN-NotHotDog"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="NotHotDog"
+        Description="MLN-NotHotDog"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />

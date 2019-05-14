@@ -1,39 +1,27 @@
 ﻿using Microsoft.ML;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace NotHotDog
+namespace MLN_NotHotDog
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private ITransformer _model;
+        private PredictionEngine<ImageData, ImagePrediction> _predictor;
         private static readonly string _modelPath = "ms-appx:///Model/hotdog.zip";
 
         public MainPage()
@@ -47,7 +35,8 @@ namespace NotHotDog
 
             // Load a trained ML.NET model
             var context = new MLContext(seed: 0);
-            _model = context.Model.Load(await GetFilePathAsync(_modelPath), out DataViewSchema schema);
+            var model = context.Model.Load(await GetFilePathAsync(_modelPath), out DataViewSchema schema);
+            _predictor = context.Model.CreatePredictionEngine<ImageData, ImagePrediction>(model);
         }
 
         private async void OnSelectImageButtonClicked(object sender, RoutedEventArgs e)
@@ -81,7 +70,7 @@ namespace NotHotDog
 
                     // Write the image to a storage file
                     var folder = ApplicationData.Current.TemporaryFolder;
-                    var tempfile = await folder.CreateFileAsync(file.Name);
+                    var tempfile = await folder.CreateFileAsync(file.Name, CreationCollisionOption.ReplaceExisting);
                     await FileIO.WriteBytesAsync(tempfile, buffer);
 
                     // Save the path to the storage file
@@ -90,34 +79,24 @@ namespace NotHotDog
 
                 try
                 {
-                    //Progress.IsActive = true;
-                    //Overlay.Visibility = Visibility.Visible;
+                    // Use ML.NET to determine whether the image contains a hot dog
+                    var image = new ImageData { ImagePath = path };
+                    var result = _predictor.Predict(image);
+                    var label = result.PredictedLabelValue;
+                    var probability = result.Score.Max();
 
-                    // Use the ML.NET model to determine whether the image contains a hot dog
-
-
-
-                    //Progress.IsActive = false;
-                    //Overlay.Visibility = Visibility.Collapsed;
-
-
-                    //if (probability > 0.90)
-                    //{
-                    //    await new MessageDialog("It's a hot dog!").ShowAsync();
-                    //}
-                    //else
-                    //{
-                    //    await new MessageDialog("Not a hot dog").ShowAsync();
-                    //}
+                    if (String.Compare(label, "hotdog", true) == 0 && probability > 0.90)
+                    {
+                        await new MessageDialog("It's a hot dog!").ShowAsync();
+                    }
+                    else
+                    {
+                        await new MessageDialog("Not a hot dog").ShowAsync();
+                    }
                 }
                 catch (Exception ex)
                 {
                     await new MessageDialog(ex.Message).ShowAsync();
-                }
-                finally
-                {
-                    //Progress.IsActive = false;
-                    //Overlay.Visibility = Visibility.Collapsed;
                 }
             }
         }
