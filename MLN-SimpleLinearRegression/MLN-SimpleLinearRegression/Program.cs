@@ -20,11 +20,6 @@ namespace SimpleLinearRegression
 
             var model = pipeline.Fit(data);
 
-            // Compute the model's R2 score
-            var predictions = model.Transform(data);
-            var metrics = context.Regression.Evaluate(predictions);
-            Console.WriteLine($"R2 score: {metrics.RSquared:0.##}");
-
             // Use the model to make a prediction
             var predictor = context.Model.CreatePredictionEngine<Input, Output>(model);
             var input = new Input { PovertyRate = 19.7f };
