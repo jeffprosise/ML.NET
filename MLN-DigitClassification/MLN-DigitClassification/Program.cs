@@ -47,15 +47,6 @@ namespace MLN_DigitClassification
                 .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy(labelColumnName: "Label", featureColumnName: "Features"))
                 .Append(context.Transforms.Conversion.MapKeyToValue("Number", "Label"));
 
-            //var pipeline = context.Transforms.Concatenate("Features", nameof(Input.PixelValues))
-            //    .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy(labelColumnName: "Number", featureColumnName: "Features"));
-
-            //var trainer = context.MulticlassClassification.Trainers.SdcaMaximumEntropy(labelColumnName: "Label", featureColumnName: "Features");
-            //var pipeline = dataProcessPipeline.Append(trainer).Append(context.Transforms.Conversion.MapKeyToValue("Number", "Label"));
-
-            //var pipeline = context.Transforms.Concatenate("Features", "PixelValues")
-            //    .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy());
-
             Console.WriteLine("Training the model...");
             var model = pipeline.Fit(trainData);
 
