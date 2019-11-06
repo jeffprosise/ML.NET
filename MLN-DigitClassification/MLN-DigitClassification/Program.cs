@@ -44,7 +44,7 @@ namespace MLN_DigitClassification
             // Build and train the model
             var pipeline = context.Transforms.Conversion.MapValueToKey("Label", "Number", keyOrdinality: KeyOrdinality.ByValue)
                 .Append(context.Transforms.Concatenate("Features", nameof(Input.PixelValues)))
-                .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy(labelColumnName: "Label", featureColumnName: "Features"))
+                .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy())
                 .Append(context.Transforms.Conversion.MapKeyToValue("Number", "Label"));
 
             Console.WriteLine("Training the model...");
