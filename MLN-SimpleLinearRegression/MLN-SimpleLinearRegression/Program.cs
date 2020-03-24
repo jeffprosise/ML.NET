@@ -16,7 +16,7 @@ namespace SimpleLinearRegression
             var data = context.Data.LoadFromTextFile<Input>(_path, hasHeader: true, separatorChar: ',');
 
             var pipeline = context.Transforms.Concatenate("Features", "PovertyRate")
-                .Append(context.Regression.Trainers.OnlineGradientDescent(learningRate: 0.01f, numberOfIterations: 1000));
+                .Append(context.Regression.Trainers.OnlineGradientDescent(learningRate: 0.01f));
 
             var model = pipeline.Fit(data);
 
