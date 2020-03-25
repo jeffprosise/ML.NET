@@ -3,7 +3,7 @@ using Microsoft.ML.Data;
 using System;
 using System.Linq;
 
-namespace MLN_SpamDetection
+namespace SpamClassifier
 {
     class Program
     {
@@ -11,8 +11,8 @@ namespace MLN_SpamDetection
 
         static readonly string[] _samples =
         {
-            "Excellent! We will proceed with outlines, if for no other reason than it helps us think hard about how these modules should be structured.",
-            "Can you attend a meeting in Atlanta on the 16th? It's important to get all the relevant players together to discuss next year's marketing plan.",
+            "If you can get the new revenue projections to me by Friday, I'll fold them into the forecast.",
+            "Can you attend a meeting in Atlanta on the 16th? I'd like to get the team together to discuss in-person.",
             "Why pay more for expensive meds when you can order them online and save $$$?"
         };
 

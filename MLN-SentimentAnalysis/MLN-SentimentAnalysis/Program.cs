@@ -3,7 +3,7 @@ using Microsoft.ML.Data;
 using System;
 using System.Linq;
 
-namespace MLN_SentimentAnalysis
+namespace SentimentAnalysis
 {
     class Program
     {

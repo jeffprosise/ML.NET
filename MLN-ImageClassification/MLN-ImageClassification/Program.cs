@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace MLN_ImageClassification
+namespace ImageClassification
 {
     class Program
     {

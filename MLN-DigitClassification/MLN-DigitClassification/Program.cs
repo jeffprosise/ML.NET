@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.ML.Transforms.ValueToKeyMappingEstimator;
 
-namespace MLN_DigitClassification
+namespace DigitClassification
 {
     class Program
     {
