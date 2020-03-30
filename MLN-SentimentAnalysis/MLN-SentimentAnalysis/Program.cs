@@ -32,7 +32,7 @@ namespace SentimentAnalysis
 
             // Build and train the model
             var pipeline = context.Transforms.Text.FeaturizeText(outputColumnName: "Features", inputColumnName: "SentimentText")
-                .Append(context.BinaryClassification.Trainers.FastTree(numberOfLeaves: 50, numberOfTrees: 50, minimumExampleCountPerLeaf: 20));
+                .Append(context.BinaryClassification.Trainers.FastTree(numberOfLeaves: 50, minimumExampleCountPerLeaf: 20));
 
             Console.WriteLine("Training the model...");
             var model = pipeline.Fit(trainData);
