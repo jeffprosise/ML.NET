@@ -43,7 +43,7 @@ namespace DigitClassification
 
             // Build and train the model
             var pipeline = context.Transforms.Conversion.MapValueToKey("Label", "Number", keyOrdinality: KeyOrdinality.ByValue)
-                .Append(context.Transforms.Concatenate("Features", nameof(Input.PixelValues)))
+                .Append(context.Transforms.Concatenate("Features", "PixelValues"))
                 .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy())
                 .Append(context.Transforms.Conversion.MapKeyToValue("Number", "Label"));
 
