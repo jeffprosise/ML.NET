@@ -22,15 +22,9 @@ namespace MultipleRegression
             var testData = trainTestData.TestSet;
 
             // One-hot encode the values in the "UseCode" column and train the model
-            //var pipeline = context.Transforms.Categorical.OneHotEncoding(inputColumnName: "UseCode", outputColumnName: "UseCodeEncoded")
-            //    .Append(context.Transforms.Concatenate("Features", "UseCodeEncoded", "Bathrooms", "Bedrooms", "TotalRooms", "FinishedSquareFeet"))
-            //    .Append(context.Regression.Trainers.FastForest());
-
-            // One-hot encode the values in the "UseCode" column, normalize the values in the input columns, and train the model
             var pipeline = context.Transforms.Categorical.OneHotEncoding(inputColumnName: "UseCode", outputColumnName: "UseCodeEncoded")
                 .Append(context.Transforms.Concatenate("Features", "UseCodeEncoded", "Bathrooms", "Bedrooms", "TotalRooms", "FinishedSquareFeet"))
-                .Append(context.Transforms.NormalizeMeanVariance("Features"))
-                .Append(context.Regression.Trainers.OnlineGradientDescent());
+                .Append(context.Regression.Trainers.FastForest(numberOfTrees: 200, minimumExampleCountPerLeaf: 4));
 
             var model = pipeline.Fit(trainData);
 

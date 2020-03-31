@@ -15,7 +15,8 @@ namespace SimpleRegression
             // Train the model
             var data = context.Data.LoadFromTextFile<Input>(_path, hasHeader: true, separatorChar: ',');
 
-            var pipeline = context.Transforms.Concatenate("Features", "PovertyRate")
+            var pipeline = context.Transforms.NormalizeMinMax("PovertyRate")
+                .Append(context.Transforms.Concatenate("Features", "PovertyRate"))
                 .Append(context.Regression.Trainers.Ols());
 
             var model = pipeline.Fit(data);
