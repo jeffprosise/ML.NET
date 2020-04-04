@@ -18,10 +18,10 @@ namespace DigitClassification
             var testData = context.Data.LoadFromTextFile<Input>(_testDataPath, hasHeader: false, separatorChar: ',');
 
             // Build and train the model
-            var pipeline = context.Transforms.Conversion.MapValueToKey("Label", "Digit", keyOrdinality: KeyOrdinality.ByValue)
+            var pipeline = context.Transforms.Conversion.MapValueToKey("Label", keyOrdinality: KeyOrdinality.ByValue)
                 .Append(context.Transforms.Concatenate("Features", "PixelValues"))
                 .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy())
-                .Append(context.Transforms.Conversion.MapKeyToValue("Digit", "Label"));
+                .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
 
             Console.WriteLine("Training the model...");
             var model = pipeline.Fit(trainData);
@@ -33,6 +33,7 @@ namespace DigitClassification
             Console.WriteLine();
             Console.WriteLine($"Macro accuracy = {(metrics.MacroAccuracy * 100):0.##}%");
             Console.WriteLine($"Micro accuracy = {(metrics.MicroAccuracy * 100):0.##}%");
+            Console.WriteLine(metrics.ConfusionMatrix.GetFormattedConfusionTable());
             Console.WriteLine();
 
             // Use the model to make a prediction
@@ -62,8 +63,7 @@ namespace DigitClassification
             }
 
             Console.WriteLine();
-            int index = prediction.Score.ToList().IndexOf(prediction.Score.Max());
-            Console.WriteLine($"Looks like a {index}!");
+            Console.WriteLine($"Looks like a {prediction.Digit}!");
             Console.WriteLine();
         }
     }
@@ -73,12 +73,15 @@ namespace DigitClassification
         [LoadColumn(0, 63), VectorType(64)]
         public float[] PixelValues;
 
-        [LoadColumn(64)]
-        public float Digit;
+        [LoadColumn(64), ColumnName("Label")]
+        public int Digit;
     }
 
     class Output
     {
         public float[] Score;
+
+        [ColumnName("PredictedLabel")]
+        public int Digit;
     }
 }
