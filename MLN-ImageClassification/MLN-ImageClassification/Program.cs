@@ -25,7 +25,7 @@ namespace ImageClassification
             LoadImageData(trainingData, Path.GetFullPath(_pizzaTrainImagesPath), "pizza");
             LoadImageData(trainingData, Path.GetFullPath(_sushiTrainImagesPath), "sushi");
 
-            var pipeline = context.Transforms.Conversion.MapValueToKey(outputColumnName: "LabelTokey", inputColumnName: "Label")
+            var pipeline = context.Transforms.Conversion.MapValueToKey(outputColumnName: "Key", inputColumnName: "Label")
                 .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_hotDogTrainImagesPath), inputColumnName: "ImagePath"))
                 .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_pizzaTrainImagesPath), inputColumnName: "ImagePath"))
                 .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_sushiTrainImagesPath), inputColumnName: "ImagePath"))
@@ -33,7 +33,7 @@ namespace ImageClassification
                 .Append(context.Transforms.ExtractPixels(outputColumnName: "input", interleavePixelColors: InceptionSettings.ChannelsLast, offsetImage: InceptionSettings.Mean))
                 .Append(context.Model.LoadTensorFlowModel(_modelPath)
                     .ScoreTensorFlowModel(outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }, addBatchDimensionInput: true)
-                .Append(context.MulticlassClassification.Trainers.LbfgsMaximumEntropy(labelColumnName: "LabelTokey", featureColumnName: "softmax2_pre_activation"))
+                .Append(context.MulticlassClassification.Trainers.LbfgsMaximumEntropy(labelColumnName: "Key", featureColumnName: "softmax2_pre_activation"))
                 .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabelValue", "PredictedLabel")));
 
             // Train the model

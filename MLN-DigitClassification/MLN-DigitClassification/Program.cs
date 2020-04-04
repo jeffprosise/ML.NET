@@ -56,7 +56,7 @@ namespace DigitClassification
             var prediction = predictor.Predict(input);
 
             int i = 0;
-            foreach (var score in prediction.Score)
+            foreach (var score in prediction.Scores)
             {
                 Console.WriteLine($"{i++} - {score:N8}");
             }
@@ -78,7 +78,8 @@ namespace DigitClassification
 
     class Output
     {
-        public float[] Score;
+        [ColumnName("Score")]
+        public float[] Scores;
 
         [ColumnName("PredictedLabel")]
         public int Digit;
