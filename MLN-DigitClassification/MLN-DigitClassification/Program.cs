@@ -1,7 +1,6 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
 using System;
-using System.Linq;
 using static Microsoft.ML.Transforms.ValueToKeyMappingEstimator;
 
 namespace DigitClassification
