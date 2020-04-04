@@ -1,10 +1,7 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Microsoft.ML.Transforms.ValueToKeyMappingEstimator;
 
 namespace DigitClassification
@@ -17,35 +14,14 @@ namespace DigitClassification
         static void Main(string[] args)
         {
             var context = new MLContext(seed: 0);
-
-            // Load the training data and the test data
-            var trainData = context.Data.LoadFromTextFile(
-                path: _trainDataPath,
-                hasHeader: false,
-                separatorChar: ',',
-                columns: new[]
-                {
-                    new TextLoader.Column("PixelValues", DataKind.Single, 0, 63),
-                    new TextLoader.Column("Number", DataKind.Single, 64)
-                }
-            );
-
-            var testData = context.Data.LoadFromTextFile(
-                path: _testDataPath,
-                hasHeader: false,
-                separatorChar: ',',
-                columns: new[]
-                {
-                    new TextLoader.Column("PixelValues", DataKind.Single, 0, 63),
-                    new TextLoader.Column("Number", DataKind.Single, 64)
-                }
-            );
+            var trainData = context.Data.LoadFromTextFile<Input>(_trainDataPath, hasHeader: false, separatorChar: ',');
+            var testData = context.Data.LoadFromTextFile<Input>(_testDataPath, hasHeader: false, separatorChar: ',');
 
             // Build and train the model
-            var pipeline = context.Transforms.Conversion.MapValueToKey("Label", "Number", keyOrdinality: KeyOrdinality.ByValue)
+            var pipeline = context.Transforms.Conversion.MapValueToKey("Label", "Digit", keyOrdinality: KeyOrdinality.ByValue)
                 .Append(context.Transforms.Concatenate("Features", "PixelValues"))
                 .Append(context.MulticlassClassification.Trainers.SdcaMaximumEntropy())
-                .Append(context.Transforms.Conversion.MapKeyToValue("Number", "Label"));
+                .Append(context.Transforms.Conversion.MapKeyToValue("Digit", "Label"));
 
             Console.WriteLine("Training the model...");
             var model = pipeline.Fit(trainData);
@@ -57,11 +33,6 @@ namespace DigitClassification
             Console.WriteLine();
             Console.WriteLine($"Macro accuracy = {(metrics.MacroAccuracy * 100):0.##}%");
             Console.WriteLine($"Micro accuracy = {(metrics.MicroAccuracy * 100):0.##}%");
-
-            // Evaluate the model using cross-validation
-            var scores = context.MulticlassClassification.CrossValidate(trainData, pipeline, numberOfFolds: 5);
-            var mean = scores.Average(x => x.Metrics.MacroAccuracy);
-            Console.WriteLine($"Mean cross-validated macro accuracy: {mean:P2}");
             Console.WriteLine();
 
             // Use the model to make a prediction
@@ -92,17 +63,18 @@ namespace DigitClassification
 
             Console.WriteLine();
             int index = prediction.Score.ToList().IndexOf(prediction.Score.Max());
-            Console.WriteLine($"Looks like a {index}");
+            Console.WriteLine($"Looks like a {index}!");
             Console.WriteLine();
         }
     }
 
     class Input
     {
-        [VectorType(64)]
+        [LoadColumn(0, 63), VectorType(64)]
         public float[] PixelValues;
 
-        public float Number;
+        [LoadColumn(64)]
+        public float Digit;
     }
 
     class Output
