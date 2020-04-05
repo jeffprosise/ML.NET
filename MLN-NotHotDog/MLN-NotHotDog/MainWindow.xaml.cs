@@ -34,6 +34,7 @@ namespace MLN_NotHotDog
             // Let the user select an image file
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "JPEG Files (*.jpg;*.jpeg)|*.jpg;*.jpeg|PNG Files (*.png)|*.png|All Files (*.*)|*.*";
+            dialog.FilterIndex = 3;
 
             if (dialog.ShowDialog() == true)
             {
@@ -50,13 +51,13 @@ namespace MLN_NotHotDog
                     var label = result.PredictedLabelValue;
                     var probability = result.Score.Max();
 
-                    if (String.Compare(label, "hotdog", true) == 0 && probability > 0.90)
+                    if (String.Compare(label, "hotdog", true) == 0)
                     {
-                        MessageBox.Show("It's a hot dog!");
+                        MessageBox.Show($"It's a hot dog! ({(probability * 100):0.#}%)");
                     }
                     else
                     {
-                        MessageBox.Show("Not a hot dog.");
+                        MessageBox.Show($"Not a hot dog. Looks more like {label}.");
                     }
                 }
                 catch (Exception ex)

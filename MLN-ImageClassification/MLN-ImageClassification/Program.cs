@@ -8,7 +8,7 @@ namespace ImageClassification
 {
     class Program
     {
-        private static readonly string _hotDogTrainImagesPath = "..\\..\\..\\Data\\train\\hot-dog";
+        private static readonly string _hotDogTrainImagesPath = "..\\..\\..\\Data\\train\\hotdog";
         private static readonly string _pizzaTrainImagesPath = "..\\..\\..\\Data\\train\\pizza";
         private static readonly string _sushiTrainImagesPath = "..\\..\\..\\Data\\train\\sushi";
         private static readonly string _testImagesPath = "..\\..\\..\\Data\\test";
@@ -25,14 +25,14 @@ namespace ImageClassification
             LoadImageData(trainingData, Path.GetFullPath(_pizzaTrainImagesPath), "pizza");
             LoadImageData(trainingData, Path.GetFullPath(_sushiTrainImagesPath), "sushi");
 
-            var pipeline = context.Transforms.Conversion.MapValueToKey(outputColumnName: "Key", inputColumnName: "Label")
-                .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_hotDogTrainImagesPath), inputColumnName: "ImagePath"))
+            var pipeline = context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_hotDogTrainImagesPath), inputColumnName: "ImagePath")
                 .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_pizzaTrainImagesPath), inputColumnName: "ImagePath"))
                 .Append(context.Transforms.LoadImages(outputColumnName: "input", imageFolder: Path.GetFullPath(_sushiTrainImagesPath), inputColumnName: "ImagePath"))
                 .Append(context.Transforms.ResizeImages(outputColumnName: "input", inputColumnName: "input", imageWidth: InceptionSettings.ImageWidth, imageHeight: InceptionSettings.ImageHeight))
                 .Append(context.Transforms.ExtractPixels(outputColumnName: "input", interleavePixelColors: InceptionSettings.ChannelsLast, offsetImage: InceptionSettings.Mean))
                 .Append(context.Model.LoadTensorFlowModel(_modelPath)
                     .ScoreTensorFlowModel(outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }, addBatchDimensionInput: true)
+                .Append(context.Transforms.Conversion.MapValueToKey(outputColumnName: "Key", inputColumnName: "Label"))
                 .Append(context.MulticlassClassification.Trainers.LbfgsMaximumEntropy(labelColumnName: "Key", featureColumnName: "softmax2_pre_activation"))
                 .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabelValue", "PredictedLabel")));
 
@@ -43,8 +43,8 @@ namespace ImageClassification
             Console.WriteLine();
 
             // Make predictions using test images
-            var predictor = context.Model.CreatePredictionEngine<ImageData, ImagePrediction>(model);
             var files = Directory.EnumerateFiles(Path.GetFullPath(_testImagesPath));
+            var predictor = context.Model.CreatePredictionEngine<ImageData, ImagePrediction>(model);
 
             foreach (var file in files)
             {
