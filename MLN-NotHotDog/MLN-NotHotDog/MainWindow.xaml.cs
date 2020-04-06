@@ -48,7 +48,7 @@ namespace MLN_NotHotDog
                     // Use ML.NET to determine whether the image contains a hot dog
                     var image = new ImageData { ImagePath = path };
                     var result = _predictor.Predict(image);
-                    var label = result.PredictedLabelValue;
+                    var label = result.PredictedLabel;
                     var probability = result.Score.Max();
 
                     if (String.Compare(label, "hotdog", true) == 0)
@@ -77,6 +77,6 @@ namespace MLN_NotHotDog
     public class ImagePrediction
     {
         public float[] Score;
-        public string PredictedLabelValue;
+        public string PredictedLabel;
     }
 }
