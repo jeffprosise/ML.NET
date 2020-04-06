@@ -34,7 +34,7 @@ namespace ImageClassification
                     .ScoreTensorFlowModel(outputColumnNames: new[] { "softmax2_pre_activation" }, inputColumnNames: new[] { "input" }, addBatchDimensionInput: true)
                 .Append(context.Transforms.Conversion.MapValueToKey(outputColumnName: "Key", inputColumnName: "Label"))
                 .Append(context.MulticlassClassification.Trainers.LbfgsMaximumEntropy(labelColumnName: "Key", featureColumnName: "softmax2_pre_activation"))
-                .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabelValue", "PredictedLabel")));
+                .Append(context.Transforms.Conversion.MapKeyToValue("PredictedLabel")));
 
             // Train the model
             Console.WriteLine("Training the model...");
@@ -50,7 +50,7 @@ namespace ImageClassification
             {
                 var image = new ImageData { ImagePath = file };
                 var result = predictor.Predict(image);
-                var label = result.PredictedLabelValue;
+                var label = result.PredictedLabel;
                 var probability = result.Score.Max();
                 Console.WriteLine($"{Path.GetFileName(file)} - {label} ({probability:P2})");
             }
@@ -87,7 +87,7 @@ namespace ImageClassification
     public class ImagePrediction
     {
         public float[] Score;
-        public string PredictedLabelValue;
+        public string PredictedLabel;
     }
 
     public struct InceptionSettings
