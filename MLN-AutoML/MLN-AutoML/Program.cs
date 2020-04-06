@@ -2,11 +2,6 @@
 using Microsoft.ML.AutoML;
 using Microsoft.ML.Data;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AutoML
 {
@@ -24,7 +19,7 @@ namespace AutoML
             // Create an experiment
             var settings = new RegressionExperimentSettings
             {
-                MaxExperimentTimeInSeconds = 600, // 10 minutes max
+                MaxExperimentTimeInSeconds = 1800, // 30 minutes max
                 OptimizingMetric = RegressionMetric.RSquared,
                 CacheDirectory = null
             };
