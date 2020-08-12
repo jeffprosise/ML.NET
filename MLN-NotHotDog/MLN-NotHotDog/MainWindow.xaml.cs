@@ -53,7 +53,7 @@ namespace MLN_NotHotDog
 
                     if (String.Compare(label, "hotdog", true) == 0)
                     {
-                        MessageBox.Show($"It's a hot dog! ({(probability * 100):0.#}%)");
+                        MessageBox.Show($"It's a hot dog! ({probability:P1})");
                     }
                     else
                     {
