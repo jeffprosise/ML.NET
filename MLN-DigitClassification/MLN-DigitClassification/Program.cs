@@ -30,8 +30,8 @@ namespace DigitClassification
             var metrics = context.MulticlassClassification.Evaluate(predictions);
 
             Console.WriteLine();
-            Console.WriteLine($"Macro accuracy = {(metrics.MacroAccuracy * 100):0.##}%");
-            Console.WriteLine($"Micro accuracy = {(metrics.MicroAccuracy * 100):0.##}%");
+            Console.WriteLine($"Macro accuracy = {metrics.MacroAccuracy:P2}");
+            Console.WriteLine($"Micro accuracy = {metrics.MicroAccuracy:P2}");
             Console.WriteLine(metrics.ConfusionMatrix.GetFormattedConfusionTable());
             Console.WriteLine();
 
