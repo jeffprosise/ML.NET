@@ -12,6 +12,6 @@
             <Grid x:Name="Container">
                 <Image x:Name="LoadedImage" Height="600" />
             </Grid>
-        </StackPanel>        
+        </StackPanel>
     </Grid>
 </Window>
