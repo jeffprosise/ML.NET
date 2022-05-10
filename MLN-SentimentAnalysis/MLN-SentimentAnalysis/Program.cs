@@ -12,7 +12,7 @@ namespace SentimentAnalysis
         static readonly string[] _samples =
         {
             "The food was great and the service was excellent",
-            "The food was bland and the service was average",
+            "The food was OK and the service was average",
             "The food was bland and the service was below average",
             "The only thing worse than the food was the terrible service",
             "I wouldn't let my dog eat here"
